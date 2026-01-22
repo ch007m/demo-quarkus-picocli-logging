@@ -1,8 +1,15 @@
-# Simple project to experiment: quarkus picocli and logging
+# Simple project to experiment: quark
+us picocli and logging
 
-Simple project to experiment: quarkus picocli and logging with 2 logging modes:
-- ANSI console logging when the `CLI` runs using the `uber` jar file
-- Traditional logging using `quarkus:dev` mode
+Simple project to configure properly the logging depending on if we launch Picocli according to the following modes:
+- `CLI` runs using the `uber` jar file then we use `ANSI console messages`
+
+![cli-uber-jar.png](cli-uber-jar.png)
+
+- `quarkus:dev` mode, then the traditional logging is used
+
+![quarkus-dev.png](quarkus-dev.png)
+
 
 To support both modes, a property has been created and the format odf the messages logged adapted
 ```properties
