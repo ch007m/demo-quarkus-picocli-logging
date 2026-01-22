@@ -1,4 +1,4 @@
-# Demo Quarkus project using different logging format
+# How to use different logging format with Quarkus Picocli and dev mode
 
 The goal of this project is to demo how we can configure different logging format top of a Quarkus and Picocli application
 as the information to be shown to the user using the Picocli client is not the same as what we log on the console in development mode.
