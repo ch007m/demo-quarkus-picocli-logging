@@ -1,15 +1,15 @@
-# Simple project to experiment: quark
-us picocli and logging
+# Simple project to experiment different logging format
 
-Simple project to configure properly the logging depending on if we launch Picocli according to the following modes:
-- `CLI` runs using the `uber` jar file then we use `ANSI` colored simple messages: 
+The goal of this project is to demo how we can configure different logging format top of a Quarkus and Picocli application
+as the information to be shown to the user using the Picocli client is not the same as what we log on the console in development mode.
+
+When the user runs the `CLI` using the `uber` jar, then we use simple `ANSI` colored messages: 
 
 ![cli-uber-jar.png](image/cli-uber-jar.png)
 
-- `quarkus:dev` mode, then the traditional `format` logging is used `h:m:s LEVEL [p.className] MESSAGE`: 
+But when it launches the application using `mvn quarkus:dev` mode, then the traditional `format` logging is used `h:m:s LEVEL [p.className] MESSAGE`: 
 
 ![quarkus-dev.png](image/quarkus-dev.png)
-
 
 To support both modes, a property has been created and the format odf the messages logged adapted
 ```properties
