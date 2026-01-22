@@ -1,3 +1,9 @@
+///usr/bin/env jbang “$0” “$@” ; exit $?
+//DEPS io.quarkus.platform:quarkus-bom:3.29.4@pom
+//DEPS io.quarkus:quarkus-picocli
+//SOURCES service/LoggingFormatingService.java
+//SOURCES service/MessageService.java
+
 package dev.snowdrop;
 
 import dev.snowdrop.service.LoggingFormatingService;
@@ -12,8 +18,7 @@ import picocli.CommandLine.Parameters;
 public class GreetingCommand implements Runnable {
     private static final Logger logger = Logger.getLogger(GreetingCommand.class);
 
-    @Parameters(paramLabel = "<name>", defaultValue = "picocli",
-        description = "Your name.")
+    @Parameters(paramLabel = "<name>", defaultValue = "picocli", description = "Your name.")
     String name;
 
     @CommandLine.Spec

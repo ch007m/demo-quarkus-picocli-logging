@@ -21,7 +21,7 @@ public class LoggingFormatingService {
     public void info(String message) {
         if (isCliMode) {
             spec.commandLine().getOut().println(
-                CommandLine.Help.Ansi.AUTO.string(message));
+                    CommandLine.Help.Ansi.AUTO.string(message));
         } else {
             logger.info(message);
         }
@@ -30,7 +30,7 @@ public class LoggingFormatingService {
     public void warn(String message) {
         if (isCliMode) {
             spec.commandLine().getOut().println(
-                CommandLine.Help.Ansi.AUTO.string(String.format(ANSI_WARN, message)));
+                    CommandLine.Help.Ansi.AUTO.string(String.format(ANSI_WARN, message)));
         } else {
             logger.warn(message);
         }
@@ -39,7 +39,7 @@ public class LoggingFormatingService {
     public void error(String message) {
         if (isCliMode) {
             spec.commandLine().getOut().println(
-                CommandLine.Help.Ansi.AUTO.string(String.format(ANSI_ERROR, message)));
+                    CommandLine.Help.Ansi.AUTO.string(String.format(ANSI_ERROR, message)));
         } else {
             logger.error(message);
         }

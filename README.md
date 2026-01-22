@@ -3,7 +3,7 @@
 The goal of this project is to demo how we can configure different logging format top of a Quarkus and Picocli application
 as the information to be shown to the user using the Picocli client is not the same as what we log on the console in development mode.
 
-When the user runs the `CLI` using the `uber` jar, then we use simple `ANSI` colored messages: 
+When the user runs the `CLI` using the `uber` jar (or jbang), then we use simple `ANSI` colored messages: 
 
 ![cli-uber-jar.png](image/cli-uber-jar.png)
 

@@ -11,10 +11,11 @@ public class MessageService {
 
     private String message;
 
-    public MessageService() {}
+    public MessageService() {
+    }
 
     public MessageService with(String message) {
-        LOG.info(String.format("Here is the message to use to say Hello: %s",message));
+        LOG.info(String.format("Here is the message to use to say Hello: %s", message));
         this.message = message;
         return this;
     }
