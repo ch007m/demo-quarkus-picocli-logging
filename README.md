@@ -4,11 +4,11 @@ us picocli and logging
 Simple project to configure properly the logging depending on if we launch Picocli according to the following modes:
 - `CLI` runs using the `uber` jar file then we use `ANSI` colored simple messages: 
 
-![cli-uber-jar.png](cli-uber-jar.png)
+![cli-uber-jar.png](image/cli-uber-jar.png)
 
 - `quarkus:dev` mode, then the traditional `format` logging is used `h:m:s LEVEL [p.className] MESSAGE`: 
 
-![quarkus-dev.png](quarkus-dev.png)
+![quarkus-dev.png](image/quarkus-dev.png)
 
 
 To support both modes, a property has been created and the format odf the messages logged adapted
