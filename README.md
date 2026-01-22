@@ -1,8 +1,107 @@
-# demo-quarkus-picocli-logging
+# Simple project to experiment: quarkus picocli and logging
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Simple project to experiment: quarkus picocli and logging with 2 logging modes:
+- ANSI console logging when the `CLI` runs using the `uber` jar file
+- Traditional logging using `quarkus:dev` mode
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+To support both modes, a property has been created and the format odf the messages logged adapted
+```properties
+# Quarkus banner and log
+quarkus.banner.enabled=false
+
+# format parameters - https://quarkus.io/guides/logging
+%dev.quarkus.log.console.format=%d{HH:mm:ss} %-5p [%c{1.}] %s%e%n
+# If we use WARN, then no io.quarkus INFO messages will be displayed
+%dev.quarkus.log.level=INFO
+%dev.quarkus.log.category."io.quarkus".level=WARN
+%dev.app.cli.mode=false
+
+#%prod.quarkus.log.console.format=%d{HH:mm:ss} %s%e%n
+%prod.quarkus.log.level=INFO
+%prod.quarkus.log.category."io.quarkus".level=WARN
+%prod.quarkus.log.console.format=%d{HH:mm:ss} %s%e%n
+%prod.app.cli.mode=true
+```
+
+The `LoggingFormatingService` java class will handle according to the property set, the corresponding lmogging message
+```java
+package dev.snowdrop.service;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.logging.Logger;
+import picocli.CommandLine;
+
+@ApplicationScoped
+public class LoggingFormatingService {
+    private static final Logger logger = Logger.getLogger(MessageService.class);
+    private final String ANSI_WARN = "@|bold,yellow WARN: %s |@";
+    private final String ANSI_ERROR = "@|bold,red ERROR: %s |@";
+    private CommandLine.Model.CommandSpec spec;
+
+    @ConfigProperty(name = "app.cli.mode", defaultValue = "false")
+    boolean isCliMode;
+
+    public LoggingFormatingService() {
+    }
+
+    public void info(String message) {
+        if (isCliMode) {
+            spec.commandLine().getOut().println(
+                CommandLine.Help.Ansi.AUTO.string(message));
+        } else {
+            logger.info(message);
+        }
+    }
+
+    public void warn(String message) {
+        if (isCliMode) {
+            spec.commandLine().getOut().println(
+                CommandLine.Help.Ansi.AUTO.string(String.format(ANSI_WARN, message)));
+        } else {
+            logger.warn(message);
+        }
+    }
+
+    public void error(String message) {
+        if (isCliMode) {
+            spec.commandLine().getOut().println(
+                CommandLine.Help.Ansi.AUTO.string(String.format(ANSI_ERROR, message)));
+        } else {
+            logger.error(message);
+        }
+    }
+
+    public void setSpec(CommandLine.Model.CommandSpec spec) {
+        this.spec = spec;
+    }
+}
+```
+
+To use it, instantiate the service and use the method `setSpec` to provide the Picocli `CommandSpec` (see detail [here](https://picocli.info/apidocs/picocli/CommandLine.Model.CommandSpec.html)) able to log to the stdout or stderr the messages
+formated using ANSI
+
+```java
+package dev.snowdrop;
+
+import dev.snowdrop.service.LoggingFormatingService;
+import jakarta.inject.Inject;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+
+@Command(name = "greeting", mixinStandardHelpOptions = true)
+public class GreetingCommand implements Runnable {
+    
+    @Inject
+    LoggingFormatingService LOG;
+
+    @Override
+    public void run() {
+        msgService.with("picocli");
+
+        // Pass the Picocli Command Spec to the LOG service
+        LOG.setSpec(spec);
+```
 
 ## Running the application in dev mode
 
@@ -34,24 +133,6 @@ If you want to build an _über-jar_, execute the following command:
 ```
 
 The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/demo-quarkus-picocli-logging-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
 
 ## Related Guides
 
