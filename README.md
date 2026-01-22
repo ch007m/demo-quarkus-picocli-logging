@@ -11,26 +11,28 @@ But when it launches the application using `mvn quarkus:dev` mode, then the trad
 
 ![quarkus-dev.png](image/quarkus-dev.png)
 
-To support both modes, a property has been created and the format odf the messages logged adapted
+To support both modes, the property `app.cli.mode=true` has been created and the format of the messages logged adapted
 ```properties
-# Quarkus banner and log
+# Quarkus banner disabled
 quarkus.banner.enabled=false
 
-# format parameters - https://quarkus.io/guides/logging
+# Quarkus dev mode
 %dev.quarkus.log.console.format=%d{HH:mm:ss} %-5p [%c{1.}] %s%e%n
-# If we use WARN, then no io.quarkus INFO messages will be displayed
 %dev.quarkus.log.level=INFO
 %dev.quarkus.log.category."io.quarkus".level=WARN
 %dev.app.cli.mode=false
 
-#%prod.quarkus.log.console.format=%d{HH:mm:ss} %s%e%n
+# Client mode
 %prod.quarkus.log.level=INFO
 %prod.quarkus.log.category."io.quarkus".level=WARN
 %prod.quarkus.log.console.format=%d{HH:mm:ss} %s%e%n
 %prod.app.cli.mode=true
 ```
 
-The `LoggingFormatingService` java class will handle according to the property set, the corresponding lmogging message
+> [!NOTE] 
+> The Quarkus logging and format documentation is available here: https://quarkus.io/guides/logging
+
+A `LoggingFormatingService` java class must be created to handle according to the property set, the format of the message
 ```java
 package dev.snowdrop.service;
 
