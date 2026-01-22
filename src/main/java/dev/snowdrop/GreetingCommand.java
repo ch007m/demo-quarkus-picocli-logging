@@ -9,7 +9,6 @@ package dev.snowdrop;
 import dev.snowdrop.service.LoggingFormatingService;
 import dev.snowdrop.service.MessageService;
 import jakarta.inject.Inject;
-import org.jboss.logging.Logger;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
