@@ -27,32 +27,16 @@ public class GreetingCommand implements Runnable {
 
     @Override
     public void run() {
-        msgService.with("picocli");
-
         // Pass the Picocli Command Spec to the LOG service
         LOG.setSpec(spec);
 
+        // set the Hello message
+        msgService.with("picocli");
+
         // Messages to log
         LOG.info(String.format("Hello %s, go go commando!", name));
-        LOG.warn("Warning msg");
-        LOG.error("Error msg");
-
-        /*
-         System.out.printf("System out msg: Hello %s, go go commando!%n", msgService.getMessage());
-         logger.infof("Log msg: Hello %s, go go commando!", name);
-
-        String warnMsg = "@|bold,yellow WARN: Log Ansi Yellow msg !|@";
-        logger.warn(CommandLine.Help.Ansi.AUTO.string(warnMsg));
-
-        String errorMsg = "@|bold,red ERROR: Log Ansi Red msg |@";
-        logger.error(CommandLine.Help.Ansi.AUTO.string(errorMsg));
-
-        spec.commandLine().getOut().println(
-            CommandLine.Help.Ansi.AUTO.string("@|bold,green Picocli out writer with Ansi Green formated msg |@"));
-        spec.commandLine().getErr().println(
-            CommandLine.Help.Ansi.AUTO.string("@|bold,red Picocli out writer with Ansi Red formated msg |@"));
-
-         */
+        LOG.warn("Hello is not very happy today !");
+        LOG.error("Hello raises an error :-(");
     }
 
 }
