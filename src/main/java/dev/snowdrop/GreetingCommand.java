@@ -16,7 +16,6 @@ import picocli.CommandLine.Parameters;
 
 @Command(name = "greeting", mixinStandardHelpOptions = true)
 public class GreetingCommand implements Runnable {
-    private static final Logger logger = Logger.getLogger(GreetingCommand.class);
 
     @Parameters(paramLabel = "<name>", defaultValue = "picocli", description = "Your name.")
     String name;
