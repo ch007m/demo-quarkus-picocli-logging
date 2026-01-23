@@ -22,18 +22,18 @@ public class LoggingService {
     @ConfigProperty(name = "cli.logging.verbose", defaultValue = "false")
     boolean isVerbose;
 
+    @ConfigProperty(name = "cli.logging.colored", defaultValue = "false")
+    boolean useAnsiColoredMsg;
+    
+    private static String TIMESTAMP_COLOR = "WHITEDIM";
+    private static String MESSAGE_COLOR = "BRIGHTWHITE";
+
     public LoggingService() {
     }
 
     public void info(String message) {
         if (isCliMode) {
-            String timestamp = OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                spec.commandLine().getOut().println(
-                    new AnsiBuilder()
-                        .add(timestamp, "WHITE")
-                        .add("INFO", "GREEN")
-                        .add(message, "BRIGHTWHITE")
-                        .build());
+            spec.commandLine().getOut().println(formatedMessage(LEVEL.INFO, message));
         } else {
             logger.info(message);
         }
@@ -41,13 +41,7 @@ public class LoggingService {
 
     public void warn(String message) {
         if (isCliMode) {
-            String timestamp = OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            spec.commandLine().getOut().println(
-                        new AnsiBuilder()
-                            .add(timestamp, "WHITEDIM")
-                            .add("WARN","YELLOW")
-                            .add(message,"BRIGHTWHITE")
-                            .build());
+            spec.commandLine().getOut().println(formatedMessage(LEVEL.WARN, message));
         } else {
             logger.warn(message);
         }
@@ -59,19 +53,13 @@ public class LoggingService {
 
     public void error(String message, Throwable e) {
         if (isCliMode) {
-            String timestamp = OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            spec.commandLine().getOut().println(
-                new AnsiBuilder()
-                    .add(timestamp, "WHITEDIM")
-                    .add("ERROR","RED")
-                    .add(message,"BRIGHTWHITE")
-                    .build());
+            spec.commandLine().getOut().println(formatedMessage(LEVEL.ERROR, message));
             if (e != null && isVerbose) {
                 e.printStackTrace(spec.commandLine().getErr());
             }
         } else {
             if (isVerbose && e != null) {
-                logger.error(message,e);
+                logger.error(message, e);
             } else {
                 logger.error(message);
             }
@@ -80,6 +68,37 @@ public class LoggingService {
 
     public void setSpec(CommandLine.Model.CommandSpec spec) {
         this.spec = spec;
+    }
+
+    private String formatedMessage(LEVEL level, String message) {
+        String timeStamp = OffsetDateTime.now()
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        if (useAnsiColoredMsg) {
+            AnsiBuilder builder = new AnsiBuilder()
+                .add(timeStamp, TIMESTAMP_COLOR)
+                .add(level, level.getColor())
+                .add(message, MESSAGE_COLOR);
+            return builder.build();
+        } else {
+            return String.format("%s %s %s", timeStamp, level.toString(), message);
+        }
+    }
+    
+    private enum LEVEL {
+        INFO("GREEN"),
+        WARN("YELLOW"),
+        ERROR("RED"),
+        DEBUG("CYAN");
+
+        private final String color;
+
+        LEVEL(String color) {
+            this.color = color;
+        }
+
+        public String getColor() {
+            return color;
+        }
     }
 
 }

@@ -4,6 +4,8 @@
 //SOURCES logging
 //SOURCES service
 //Q:CONFIG cli.mode=true
+//Q:CONFIG cli.logging.colored=true
+//Q:CONFIG cli.logging.verbose=true
 //Q:CONFIG quarkus.banner.enabled=false
 //Q:CONFIG quarkus.log.level=WARN
 
