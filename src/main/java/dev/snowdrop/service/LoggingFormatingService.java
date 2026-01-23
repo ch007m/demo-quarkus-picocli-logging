@@ -12,8 +12,6 @@ import java.time.format.DateTimeFormatter;
 public class LoggingFormatingService {
     private static final Logger logger = Logger.getLogger(MessageService.class);
 
-    private final String ANSI_WARN = "@|bold,yellow WARN: %s |@";
-    private final String ANSI_ERROR = "@|bold,red ERROR: %s |@";
     private static final String ESC_CHAR = "\u001B";
 
     public static final String WHITEDIM = "[37;2m";
@@ -51,6 +49,7 @@ public class LoggingFormatingService {
 
     public void warn(String message) {
         if (isCliMode) {
+            String ANSI_WARN = "@|bold,yellow WARN: %s |@";
             spec.commandLine().getOut().println(
                     CommandLine.Help.Ansi.AUTO.string(String.format(ANSI_WARN, message)));
         } else {
@@ -64,6 +63,7 @@ public class LoggingFormatingService {
 
     public void error(String message, Throwable e) {
         if (isCliMode) {
+            String ANSI_ERROR = "@|bold,red ERROR: %s |@";
             spec.commandLine().getErr().println(
                     CommandLine.Help.Ansi.AUTO.string(String.format(ANSI_ERROR, message)));
             if (e != null && isVerbose) {
