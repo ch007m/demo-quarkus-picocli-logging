@@ -30,6 +30,14 @@
     </dependencyManagement>
 
     <dependencies>
+        <!--
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline-terminal</artifactId>
+            <version>3.30.6</version>
+        </dependency>
+        -->
+
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-picocli</artifactId>
