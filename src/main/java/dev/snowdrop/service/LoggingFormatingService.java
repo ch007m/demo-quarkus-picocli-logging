@@ -17,7 +17,7 @@ public class LoggingFormatingService {
     private static final String ESC_CHAR = "\u001B";
 
     public static final String WHITEDIM = "[37;2m";
-    public static final String GREEN = "\u001B[32m";
+    public static final String GREEN = "[32m";
     public static final String LIGHTGREY = "[90m";
 
     public static final String MAGENTA = "[35m";
