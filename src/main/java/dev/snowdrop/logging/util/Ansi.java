@@ -6,6 +6,10 @@ public enum Ansi {
     // Color code from:
     // http://www.topmudsites.com/forums/mud-coding/413-java-ansi.html
     // https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
+
+    // Foreground colors
+    BLACK("[30m"),
+    BLUE("[34m"),
     BRIGHTWHITE("[97m"),
     CYAN("[36m"),
     FAINT("[2m"),
@@ -17,6 +21,24 @@ public enum Ansi {
     WHITE("[37m"),
     WHITEDIM("[37;2m"),
     YELLOW("[33m"),
+
+    // Background colors
+    BG_BLACK("[40m"),
+    BG_RED("[41m"),
+    BG_GREEN("[42m"),
+    BG_YELLOW("[43m"),
+    BG_BLUE("[44m"),
+    BG_MAGENTA("[45m"),
+    BG_CYAN("[46m"),
+    BG_WHITE("[47m"),
+    BG_BRIGHTBLACK("[100m"),
+    BG_BRIGHTRED("[101m"),
+    BG_BRIGHTGREEN("[102m"),
+    BG_BRIGHTYELLOW("[103m"),
+    BG_BRIGHTBLUE("[104m"),
+    BG_BRIGHTMAGENTA("[105m"),
+    BG_BRIGHTCYAN("[106m"),
+    BG_BRIGHTWHITE("[107m"),
 
     RESET("[0m");
 
@@ -55,19 +77,9 @@ public enum Ansi {
     }
 
     /**
-     *
-     * @param text
-     * @param colorName
-     * @return
-     */
-    public static Part text(String text, String colorName) {
-        return new Part(text, color(colorName));
-    }
-
-    /**
-     *
-     * @param name
-     * @return
+     * Colorize the string using the name of the color
+     * @param name - the name of the color: RED, GREEN etc
+     * @return the Ansi object with the proper ANSI code
      */
     public static Ansi color(String name) {
         return Arrays.stream(values())
@@ -77,10 +89,10 @@ public enum Ansi {
     }
 
     /**
-     *
-     * @param pattern
-     * @param args
-     * @return
+     * Encapsulate the string template formated with the selected color
+     * @param pattern - the string template to format the txt
+     * @param args - the arguments to be used by the formater
+     * @return the string formated and colorized
      */
     public String format(String pattern, Object... args) {
         String message = String.format(pattern, args);

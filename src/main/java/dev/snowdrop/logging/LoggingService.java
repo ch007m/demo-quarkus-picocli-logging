@@ -28,12 +28,12 @@ public class LoggingService {
     public void info(String message) {
         if (isCliMode) {
             String timestamp = OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            spec.commandLine().getOut().println(
-                        new AnsiBuilder()
-                            .add(timestamp, "WHITEDIM")
-                            .add("INFO", "GREEN")
-                            .add(message, "BRIGHTWHITE")
-                            .build());
+                spec.commandLine().getOut().println(
+                    new AnsiBuilder()
+                        .add(timestamp, "WHITE")
+                        .add("INFO", "GREEN")
+                        .add(message, "BRIGHTWHITE")
+                        .build());
         } else {
             logger.info(message);
         }
