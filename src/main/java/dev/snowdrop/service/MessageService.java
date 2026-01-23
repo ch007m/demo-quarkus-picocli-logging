@@ -1,5 +1,6 @@
 package dev.snowdrop.service;
 
+import dev.snowdrop.logging.LoggingService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -7,7 +8,7 @@ import jakarta.inject.Inject;
 public class MessageService {
 
     @Inject
-    LoggingFormatingService LOG;
+    LoggingService LOG;
 
     private String message;
 

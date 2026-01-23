@@ -1,5 +1,7 @@
-package dev.snowdrop.service;
+package dev.snowdrop.logging;
 
+import dev.snowdrop.logging.util.AnsiBuilder;
+import dev.snowdrop.service.MessageService;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
@@ -9,20 +11,8 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
 @ApplicationScoped
-public class LoggingFormatingService {
+public class LoggingService {
     private static final Logger logger = Logger.getLogger(MessageService.class);
-
-    private static final String ESC_CHAR = "\u001B";
-
-    public static final String WHITEDIM = "[37;2m";
-    public static final String GREEN = "[32m";
-    public static final String LIGHTGREY = "[90m";
-
-    public static final String MAGENTA = "[35m";
-    public static final String GREENLIGHT = "[92m";
-    public static final String CYAN = "[36m";
-
-    public static final String RESET = "\u001B[0m";
 
     private CommandLine.Model.CommandSpec spec;
 
@@ -32,16 +22,18 @@ public class LoggingFormatingService {
     @ConfigProperty(name = "cli.logging.verbose", defaultValue = "false")
     boolean isVerbose;
 
-    public LoggingFormatingService() {
+    public LoggingService() {
     }
 
     public void info(String message) {
         if (isCliMode) {
+            String timestamp = OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             spec.commandLine().getOut().println(
-                    CommandLine.Help.Ansi.AUTO.string(
-                            colorize(OffsetDateTime.now()
-                                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), WHITEDIM) + " " +
-                                    colorize("INFO", GREEN) + " " + colorize(message, LIGHTGREY)));
+                        new AnsiBuilder()
+                            .add(timestamp, "WHITEDIM")
+                            .add("INFO", "GREEN")
+                            .add(message, "BRIGHTWHITE")
+                            .build());
         } else {
             logger.info(message);
         }
@@ -49,9 +41,13 @@ public class LoggingFormatingService {
 
     public void warn(String message) {
         if (isCliMode) {
-            String ANSI_WARN = "@|bold,yellow WARN: %s |@";
+            String timestamp = OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             spec.commandLine().getOut().println(
-                    CommandLine.Help.Ansi.AUTO.string(String.format(ANSI_WARN, message)));
+                        new AnsiBuilder()
+                            .add(timestamp, "WHITEDIM")
+                            .add("WARN","YELLOW")
+                            .add(message,"BRIGHTWHITE")
+                            .build());
         } else {
             logger.warn(message);
         }
@@ -63,9 +59,13 @@ public class LoggingFormatingService {
 
     public void error(String message, Throwable e) {
         if (isCliMode) {
-            String ANSI_ERROR = "@|bold,red ERROR: %s |@";
-            spec.commandLine().getErr().println(
-                    CommandLine.Help.Ansi.AUTO.string(String.format(ANSI_ERROR, message)));
+            String timestamp = OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            spec.commandLine().getOut().println(
+                new AnsiBuilder()
+                    .add(timestamp, "WHITEDIM")
+                    .add("ERROR","RED")
+                    .add(message,"BRIGHTWHITE")
+                    .build());
             if (e != null && isVerbose) {
                 e.printStackTrace(spec.commandLine().getErr());
             }
@@ -80,17 +80,6 @@ public class LoggingFormatingService {
 
     public void setSpec(CommandLine.Model.CommandSpec spec) {
         this.spec = spec;
-    }
-
-    /**
-     * Applies color formatting to text.
-     *
-     * @param text the text to color
-     * @param color the ANSI color code
-     * @return the colored text
-     */
-    private static String colorize(String text, String color) {
-        return ESC_CHAR + color + text + RESET;
     }
 
 }

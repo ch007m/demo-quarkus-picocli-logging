@@ -1,15 +1,15 @@
 ///usr/bin/env jbang “$0” “$@” ; exit $?
 //DEPS io.quarkus.platform:quarkus-bom:3.29.4@pom
 //DEPS io.quarkus:quarkus-picocli
-//SOURCES service/LoggingFormatingService.java
-//SOURCES service/MessageService.java
+//SOURCES logging
+//SOURCES service
 //Q:CONFIG cli.mode=true
 //Q:CONFIG quarkus.banner.enabled=false
 //Q:CONFIG quarkus.log.level=WARN
 
 package dev.snowdrop;
 
-import dev.snowdrop.service.LoggingFormatingService;
+import dev.snowdrop.logging.LoggingService;
 import dev.snowdrop.service.MessageService;
 import jakarta.inject.Inject;
 import picocli.CommandLine;
@@ -29,7 +29,7 @@ public class GreetingCommand implements Runnable {
     MessageService msgService;
 
     @Inject
-    LoggingFormatingService LOG;
+    LoggingService LOG;
 
     @Override
     public void run() {

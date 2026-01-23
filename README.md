@@ -93,16 +93,15 @@ formated using ANSI
 ```java
 package dev.snowdrop;
 
-import dev.snowdrop.service.LoggingFormatingService;
+import dev.snowdrop.logging.LoggingService;
 import jakarta.inject.Inject;
-import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 @Command(name = "greeting", mixinStandardHelpOptions = true)
 public class GreetingCommand implements Runnable {
-    
+
     @Inject
-    LoggingFormatingService LOG;
+    LoggingService LOG;
 
     @Override
     public void run() {
