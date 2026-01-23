@@ -3,6 +3,9 @@
 //DEPS io.quarkus:quarkus-picocli
 //SOURCES service/LoggingFormatingService.java
 //SOURCES service/MessageService.java
+//Q:CONFIG cli.mode=true
+//Q:CONFIG quarkus.banner.enabled=false
+//Q:CONFIG quarkus.log.level=WARN
 
 package dev.snowdrop;
 
@@ -40,6 +43,13 @@ public class GreetingCommand implements Runnable {
         LOG.info(String.format("Hello %s, go go commando!", name));
         LOG.warn("Hello is not very happy today !");
         LOG.error("Hello raises an error :-(");
+
+        try {
+            // Emulate a business logic failure
+            throw new IllegalStateException("Database connection timed out after 30s");
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to execute command: %s",e.getMessage()),e);
+        }
     }
 
 }

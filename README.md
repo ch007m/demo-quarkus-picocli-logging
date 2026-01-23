@@ -11,7 +11,7 @@ But when it launches the application using `mvn quarkus:dev` mode, then the trad
 
 ![quarkus-dev.png](image/quarkus-dev.png)
 
-To support both modes, the property `app.cli.mode=true` has been created and the format of the messages logged adapted
+To support both modes, the property `cli.mode=true` has been created and the format of the messages logged adapted
 ```properties
 # Quarkus banner disabled
 quarkus.banner.enabled=false
@@ -20,13 +20,13 @@ quarkus.banner.enabled=false
 %dev.quarkus.log.console.format=%d{HH:mm:ss} %-5p [%c{1.}] %s%e%n
 %dev.quarkus.log.level=INFO
 %dev.quarkus.log.category."io.quarkus".level=WARN
-%dev.app.cli.mode=false
+%dev.cli.mode=false
 
 # Client mode
 %prod.quarkus.log.level=INFO
 %prod.quarkus.log.category."io.quarkus".level=WARN
 %prod.quarkus.log.console.format=%d{HH:mm:ss} %s%e%n
-%prod.app.cli.mode=true
+%prod.cli.mode=true
 ```
 
 > [!NOTE] 
@@ -48,7 +48,7 @@ public class LoggingFormatingService {
     private final String ANSI_ERROR = "@|bold,red ERROR: %s |@";
     private CommandLine.Model.CommandSpec spec;
 
-    @ConfigProperty(name = "app.cli.mode", defaultValue = "false")
+    @ConfigProperty(name = "cli.mode", defaultValue = "false")
     boolean isCliMode;
 
     public LoggingFormatingService() {
