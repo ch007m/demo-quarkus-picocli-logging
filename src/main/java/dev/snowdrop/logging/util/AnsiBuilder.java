@@ -11,4 +11,5 @@ public class AnsiBuilder {
     public String build() {
         return sb.toString();
     }
+
 }

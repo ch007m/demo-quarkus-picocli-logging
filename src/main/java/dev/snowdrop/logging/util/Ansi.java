@@ -13,14 +13,20 @@ public enum Ansi {
     BRIGHTWHITE("[97m"),
     CYAN("[36m"),
     FAINT("[2m"),
-    GREEN("[32m"),
-    GREENLIGHT("[92m"),
+
+    GREEN("[38;5;108m"),
+    MESSAGE("[38;5;151m"),
+
     LIGHTGREY("[90m"),
     MAGENTA("[35m"),
-    RED("[31m"),
+
+    RED("[38;5;167m"),
+    TIMESTAMP("[38;5;145m"),
+
     WHITE("[37m"),
     WHITEDIM("[37;2m"),
-    YELLOW("[33m"),
+
+    YELLOW("[38;5;137m"),
 
     // Background colors
     BG_BLACK("[40m"),

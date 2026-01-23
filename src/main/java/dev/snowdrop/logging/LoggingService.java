@@ -1,6 +1,7 @@
 package dev.snowdrop.logging;
 
 import dev.snowdrop.logging.util.AnsiBuilder;
+import dev.snowdrop.logging.util.LEVEL;
 import dev.snowdrop.service.MessageService;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -22,17 +23,21 @@ public class LoggingService {
     @ConfigProperty(name = "cli.logging.verbose", defaultValue = "false")
     boolean isVerbose;
 
-    @ConfigProperty(name = "cli.logging.colored", defaultValue = "false")
+    @ConfigProperty(name = "cli.logging.colored", defaultValue = "true")
     boolean useAnsiColoredMsg;
     
-    private static String TIMESTAMP_COLOR = "WHITEDIM";
-    private static String MESSAGE_COLOR = "BRIGHTWHITE";
+    private static String TIMESTAMP_COLOR = "TIMESTAMP";
+    private static String MESSAGE_COLOR = "MESSAGE";
+
+    CommandLine.Help.ColorScheme colorScheme;
 
     public LoggingService() {
     }
 
     public void info(String message) {
+        // TODO: To be investigate to see if this is easier to use picocli Ansi and the colorScheme = spec.commandLine().getColorScheme();
         if (isCliMode) {
+            //spec.commandLine().getOut().println(colorScheme.ansi().new Text("#" + message,colorScheme));
             spec.commandLine().getOut().println(formatedMessage(LEVEL.INFO, message));
         } else {
             logger.info(message);
@@ -70,7 +75,7 @@ public class LoggingService {
         this.spec = spec;
     }
 
-    private String formatedMessage(LEVEL level, String message) {
+    public String formatedMessage(LEVEL level, String message) {
         String timeStamp = OffsetDateTime.now()
             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         if (useAnsiColoredMsg) {
@@ -81,23 +86,6 @@ public class LoggingService {
             return builder.build();
         } else {
             return String.format("%s %s %s", timeStamp, level.toString(), message);
-        }
-    }
-    
-    private enum LEVEL {
-        INFO("GREEN"),
-        WARN("YELLOW"),
-        ERROR("RED"),
-        DEBUG("CYAN");
-
-        private final String color;
-
-        LEVEL(String color) {
-            this.color = color;
-        }
-
-        public String getColor() {
-            return color;
         }
     }
 
