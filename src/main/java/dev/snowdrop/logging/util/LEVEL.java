@@ -4,7 +4,8 @@ public enum LEVEL {
     INFO("GREEN"),
     WARN("YELLOW"),
     ERROR("RED"),
-    DEBUG("CYAN");
+    DEBUG("CYAN"),
+    TRACE("CYAN");
 
     private final String color;
 

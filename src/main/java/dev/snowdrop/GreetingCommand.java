@@ -1,11 +1,12 @@
 ///usr/bin/env jbang “$0” “$@” ; exit $?
 //DEPS io.quarkus.platform:quarkus-bom:3.29.4@pom
 //DEPS io.quarkus:quarkus-picocli
+//DEPS org.aesh:terminal-tty:3.0-dev
 //SOURCES logging
 //SOURCES service
 //Q:CONFIG cli.mode=true
 //Q:CONFIG cli.logging.colored=true
-//Q:CONFIG cli.logging.verbose=true
+//Q:CONFIG cli.logging.verbose=false
 //Q:CONFIG quarkus.banner.enabled=false
 //Q:CONFIG quarkus.log.level=WARN
 
@@ -35,6 +36,9 @@ public class GreetingCommand implements Runnable {
 
     @Override
     public void run() {
+        // Init Aesh
+        LOG.setupAesh();
+
         // Pass the Picocli Command Spec to the LOG service
         LOG.setSpec(spec);
 
@@ -43,8 +47,9 @@ public class GreetingCommand implements Runnable {
 
         // Messages to log
         LOG.info(String.format("Hello %s, go go commando!", name));
-        LOG.warn("Hello is not very happy today !");
-        LOG.error("Hello raises an error :-(");
+        LOG.warn("This is a logging WARN message.");
+        LOG.debug("This is a logging DEBUG message.");
+        LOG.trace("This is a logging TRACE message.");
 
         try {
             // Emulate a business logic failure

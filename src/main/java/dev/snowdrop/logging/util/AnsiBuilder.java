@@ -8,6 +8,17 @@ public class AnsiBuilder {
         return this;
     }
 
+    public AnsiBuilder add(Object text, int code) {
+        String ansiCode = "[" + code + "m";
+        String formattedText = "\u001b" + ansiCode + text + "\u001b[0m";
+        sb.append(formattedText).append(" ");
+        return this;
+    }
+
+    public StringBuilder raw() {
+        return sb;
+    }
+
     public String build() {
         return sb.toString();
     }

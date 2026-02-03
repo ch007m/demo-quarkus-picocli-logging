@@ -52,7 +52,7 @@ public enum Ansi {
     private static final String ESC_CHAR = "\u001b";
 
     /**
-     * Ansi contructor
+     * Ansi constructor
      *
      * @param code - the color selected to colorize the string
      */

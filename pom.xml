@@ -55,6 +55,13 @@
         </dependency>
         -->
 
+        <!-- Aesh tty, AnsiBuilder, tool -->
+        <dependency>
+            <groupId>org.aesh</groupId>
+            <artifactId>terminal-tty</artifactId>
+            <version>3.0-dev</version>
+        </dependency>
+
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-picocli</artifactId>
