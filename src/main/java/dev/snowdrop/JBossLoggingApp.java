@@ -3,16 +3,17 @@
 
 package dev.snowdrop;
 
-import org.aesh.terminal.tty.TerminalConnection;
-import org.aesh.terminal.utils.ANSIBuilder;
-import org.aesh.terminal.utils.ColorDepth;
-import org.aesh.terminal.utils.TerminalColorCapability;
-
-import java.io.IOException;
 import java.util.Arrays;
 
 import static java.lang.Math.abs;
 
+/**
+ * Project able to calculate the RGB codes using HSV values
+ *
+ * Code inspired from:
+ * - ColorUtil: https://github.com/jboss-logging/jboss-logmanager/blob/main/src/main/java/org/jboss/logmanager/formatters/ColorUtil.java#L37-L49
+ * - ColorPatternFormatter: https://github.com/jboss-logging/jboss-logmanager/blob/main/src/main/java/org/jboss/logmanager/formatters/ColorPatternFormatter.java#L187-L195
+ */
 public class JBossLoggingApp {
     static int MODE = 39;
 
