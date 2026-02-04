@@ -13,6 +13,10 @@ import static java.lang.Math.abs;
  * Code inspired from:
  * - ColorUtil: https://github.com/jboss-logging/jboss-logmanager/blob/main/src/main/java/org/jboss/logmanager/formatters/ColorUtil.java#L37-L49
  * - ColorPatternFormatter: https://github.com/jboss-logging/jboss-logmanager/blob/main/src/main/java/org/jboss/logmanager/formatters/ColorPatternFormatter.java#L187-L195
+ * <p>
+ *  The LEVEL value (400 -> 1100) is based on HSV: https://en.wikipedia.org/wiki/HSL_and_HSV and represents the dimensional value
+ * <p>
+ *  JDK proposes formula to convert HSB values to RGB: https://github.com/openjdk/jdk/blob/master/src/java.desktop/share/classes/java/awt/Color.java#L821
  */
 public class JBossLoggingApp {
     static int MODE = 39;
@@ -26,7 +30,13 @@ public class JBossLoggingApp {
 
     static int LARGEST_LEVEL = ERROR_LEVEL;
     static int SMALLEST_LEVEL = TRACE_LEVEL;
-    static int SATURATION = 66;
+
+    /**
+     *  This saturation value of 66 is a good compromise.
+     *  If we increase it to 100, 200 then we can better see the TRACE level on a dark terminal but the colors are becoming insipid
+     *  If we decrease the values, then the colors appears more shiny but that don't relly help us to better show the TRACE
+     */
+    static int SATURATION = 0;
 
     static int darken;
     static int r;
