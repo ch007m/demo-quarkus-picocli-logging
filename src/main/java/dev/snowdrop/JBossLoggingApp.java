@@ -20,17 +20,18 @@ import static java.lang.Math.abs;
  *  JDK proposes formula to convert HSB values to RGB: https://github.com/openjdk/jdk/blob/master/src/java.desktop/share/classes/java/awt/Color.java#L821
  */
 public class JBossLoggingApp {
-    static int MODE = 39;
+    static final int MODE = 39;
 
-    static int FATAL_LEVEL = 1100;
-    static int ERROR_LEVEL = 1000;
-    static int WARN_LEVEL = 900;
-    static int INFO_LEVEL = 800;
-    static int DEBUG_LEVEL = 500;
-    static int TRACE_LEVEL = 400;
+    static final int FATAL_LEVEL = 1100;
+    static final int ERROR_LEVEL = 1000;
+    static final int WARN_LEVEL = 900;
+    static final int INFO_LEVEL = 800;
+    static final int DEBUG_LEVEL = 500;
+    static final int TRACE_LEVEL = 400;
+    static final int MESSAGE_LEVEL = 100;
 
-    static int LARGEST_LEVEL = ERROR_LEVEL;
-    static int SMALLEST_LEVEL = TRACE_LEVEL;
+    static final int LARGEST_LEVEL = ERROR_LEVEL;
+    static final int SMALLEST_LEVEL = TRACE_LEVEL;
 
     /**
      *  This saturation value of 66 is a good compromise.
@@ -63,7 +64,7 @@ public class JBossLoggingApp {
                 System.out.println("*".repeat(70));
                 System.out.printf("New RGB calculation for: %s Theme using darken: %d\n", themeType, darken);
                 System.out.println("*".repeat(70));
-                printHSVtoRGBwithFixedBrightColors(darkTheme);
+                printUsingNewHSVtoRGFormula(darkTheme);
                 System.out.println();
             }
         } catch (Exception e) {
@@ -137,18 +138,24 @@ public class JBossLoggingApp {
         }
     }
 
-    static void printHSVtoRGBwithFixedBrightColors(boolean darkTheme) throws NoSuchFieldException, IllegalAccessException {
+    static void printUsingNewHSVtoRGFormula(boolean darkTheme) throws NoSuchFieldException, IllegalAccessException {
         for (String LEVEL: Arrays.asList("TRACE","DEBUG","INFO","WARN","ERROR", "FATAL")) {
             StringBuilder target = new StringBuilder();
 
-            hsvToRGBwithFixedBrightColors((int) JBossLoggingApp.class.getDeclaredField(LEVEL + "_LEVEL").get(null), darkTheme);
+            // int[] levelColor = generateLogLevelColor(darkTheme, (int) JBossLoggingApp.class.getDeclaredField(LEVEL + "_LEVEL").get(null));
+            // startColor(target, 38, true, levelColor[0], levelColor[1], levelColor[2]);
+            // target.append(LEVEL);
+            // target.append(String.format(" - RGB: (%d, %d, %d)", levelColor[0], levelColor[1], levelColor[2]));
+            // endColor(target, MODE);
 
+            hsvToRGBwithFixedBrightColors((int) JBossLoggingApp.class.getDeclaredField(LEVEL + "_LEVEL").get(null), darkTheme);
             startColor(target, 38, true, r,g,b);
+
             target.append(LEVEL);
-            target.append(String.format(" - RGB: (%d, %d, %d)", r, g, b));
+            target.append(String.format(" - RGB: (%d, %d, %d)", r,g,b));
             endColor(target, MODE);
 
-            int[] messageColor = getMessageColor(darkTheme);
+            int[] messageColor = generateLogLevelColor(darkTheme, MESSAGE_LEVEL);
             startColor(target, 38, true, messageColor[0], messageColor[1], messageColor[2]);
             target.append(" log message.");
             endColor(target, MODE);
@@ -176,10 +183,9 @@ public class JBossLoggingApp {
      * @param darkTheme true for dark theme, false for light theme
      * @return array of [r, g, b] values for log message color
      */
-    static int[] getMessageColor(boolean darkTheme) {
-        // Use a fixed hue for green (120 degrees in HSV color space)
-        // Green is typically around 120 degrees on the color wheel
-        float messageHue = 120.0f / 360.0f; // Convert to 0-1 range for HSBtoRGB
+    static int[] generateRGBColor(boolean darkTheme, int hue) {
+        var intHue = Integer.valueOf(hue);
+        float messageHue = intHue.floatValue() / 360.0f; // Convert to 0-1 range for HSBtoRGB
 
         float saturation;
         float brightness;
@@ -202,6 +208,129 @@ public class JBossLoggingApp {
 
         // Convert HSB to RGB using Java's built-in method
         int rgb = java.awt.Color.HSBtoRGB(messageHue, saturation, brightness);
+
+        // Extract RGB components and apply brightness constraints
+        int r = Math.min(Math.max((rgb >> 16) & 0xFF, minBrightness), maxBrightness) >>> darken;
+        int g = Math.min(Math.max((rgb >> 8) & 0xFF, minBrightness), maxBrightness) >>> darken;
+        int b = Math.min(Math.max(rgb & 0xFF, minBrightness), maxBrightness) >>> darken;
+
+        return new int[]{r, g, b};
+    }
+
+    static int[] generateLogLevelColor(boolean darkTheme, int logLevel) {
+        // Improved gradient that produces colors similar to the appealing fixed palette
+        // Based on analysis of the fixed color palette shown in the reference image
+
+        // Define hue progression that matches the fixed palette's color sequence:
+        // TRACE (purple) -> DEBUG (blue) -> INFO (green) -> WARN (orange) -> ERROR (red) -> FATAL (bright red)
+        float hue;
+        float saturation;
+        float brightness;
+
+        if (darkTheme) {
+            // Dark theme: bright, saturated colors for visibility on dark backgrounds
+            switch (logLevel) {
+                case TRACE_LEVEL -> {
+                    hue = 270f;        // Purple (like RGB 200,150,255)
+                    saturation = 0.7f;
+                    brightness = 0.95f;
+                }
+                case DEBUG_LEVEL -> {
+                    hue = 200f;        // Blue-cyan (like RGB 100,200,255)
+                    saturation = 0.8f;
+                    brightness = 0.9f;
+                }
+                case INFO_LEVEL -> {
+                    hue = 120f;        // Green (like RGB 150,255,150)
+                    saturation = 0.7f;
+                    brightness = 0.95f;
+                }
+                case WARN_LEVEL -> {
+                    hue = 40f;         // Orange-yellow (like RGB 255,200,100)
+                    saturation = 0.8f;
+                    brightness = 0.9f;
+                }
+                case ERROR_LEVEL -> {
+                    hue = 0f;          // Pure red (like RGB 255,0,0)
+                    saturation = 0.9f;
+                    brightness = 1.0f; // Maximum brightness for pure red
+                }
+                case FATAL_LEVEL -> {
+                    hue = 300f;        // Bright magenta (more purple, less pink)
+                    saturation = 1.0f; // Full saturation for vivid magenta
+                    brightness = 1.0f; // Maximum brightness
+                }
+                case MESSAGE_LEVEL -> {
+                    hue = 140f;        // Light green (like RGB 180,220,180)
+                    saturation = 0.4f;
+                    brightness = 0.8f;
+                }
+                default -> {
+                    hue = 120f;
+                    saturation = 0.7f;
+                    brightness = 0.9f;
+                }
+            }
+        } else {
+            // Light theme: darker, more muted colors for readability on light backgrounds
+            switch (logLevel) {
+                case TRACE_LEVEL -> {
+                    hue = 300f;        // Purple (like RGB 128,0,128)
+                    saturation = 1.0f;
+                    brightness = 0.5f;
+                }
+                case DEBUG_LEVEL -> {
+                    hue = 210f;        // Blue (like RGB 0,128,255)
+                    saturation = 1.0f;
+                    brightness = 0.7f;
+                }
+                case INFO_LEVEL -> {
+                    hue = 120f;        // Green (like RGB 0,128,0)
+                    saturation = 1.0f;
+                    brightness = 0.5f;
+                }
+                case WARN_LEVEL -> {
+                    hue = 35f;         // Brown-orange (like RGB 192,129,66)
+                    saturation = 0.8f;
+                    brightness = 0.6f;
+                }
+                case ERROR_LEVEL -> {
+                    hue = 0f;          // Red (like RGB 255,0,0)
+                    saturation = 1.0f;
+                    brightness = 0.7f;
+                }
+                case FATAL_LEVEL -> {
+                    hue = 320f;        // Dark magenta for distinction from ERROR
+                    saturation = 0.9f;
+                    brightness = 0.5f;
+                }
+                case MESSAGE_LEVEL -> {
+                    hue = 120f;        // Dark green (like RGB 100,120,100)
+                    saturation = 0.3f;
+                    brightness = 0.4f;
+                }
+                default -> {
+                    hue = 120f;
+                    saturation = 0.8f;
+                    brightness = 0.6f;
+                }
+            }
+        }
+
+        // Convert HSB to RGB using Java's built-in method
+        int rgb = java.awt.Color.HSBtoRGB(hue / 360f, saturation, brightness);
+
+        // Define brightness constraints based on theme for fine-tuning
+        int minBrightness;
+        int maxBrightness;
+
+        if (darkTheme) {
+            minBrightness = 120;    // Slightly lower minimum for more color variation
+            maxBrightness = 255;
+        } else {
+            minBrightness = 50;     // Lower minimum for better contrast on light backgrounds
+            maxBrightness = 200;    // Slightly higher maximum for better visibility
+        }
 
         // Extract RGB components and apply brightness constraints
         int r = Math.min(Math.max((rgb >> 16) & 0xFF, minBrightness), maxBrightness) >>> darken;
