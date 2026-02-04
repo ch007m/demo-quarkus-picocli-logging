@@ -91,6 +91,7 @@ public class JBossLoggingApp {
             target.append(String.format(" - RGB: (%d, %d, %d)", r, g, b));
             endColor(target, MODE);
 
+            // Use original JBoss color for consistency with original implementation
             startColor(target, 38, true, 176, 208, 176);
             target.append(" log message.");
             endColor(target, MODE);
@@ -110,7 +111,8 @@ public class JBossLoggingApp {
             target.append(String.format(" - RGB: (%d, %d, %d)", r, g, b));
             endColor(target, MODE);
 
-            startColor(target, 38, true, 176, 208, 176);
+            int[] messageColor = getMessageColor(darkTheme);
+            startColor(target, 38, true, messageColor[0], messageColor[1], messageColor[2]);
             target.append(" log message.");
             endColor(target, MODE);
 
@@ -129,7 +131,8 @@ public class JBossLoggingApp {
             target.append(String.format(" - RGB: (%d, %d, %d)", r, g, b));
             endColor(target, MODE);
 
-            startColor(target, 38, true, 176, 208, 176);
+            int[] messageColor = getMessageColor(darkTheme);
+            startColor(target, 38, true, messageColor[0], messageColor[1], messageColor[2]);
             target.append(" log message.");
             endColor(target, MODE);
 
@@ -148,6 +151,24 @@ public class JBossLoggingApp {
 
     static int clip(int color) {
         return Math.min(Math.max(0, color), 255);
+    }
+
+    /**
+     * Gets the theme-appropriate RGB color for log messages (colorIndex 6).
+     * @param darkTheme true for dark theme, false for light theme
+     * @return array of [r, g, b] values for log message color
+     */
+    static int[] getMessageColor(boolean darkTheme) {
+        // Message colors (colorIndex 6)
+        int[] lightThemeMessage = {100, 120, 100};  // Dark Green
+        int[] darkThemeMessage = {180, 220, 180};   // Light Green
+
+        int[] color = darkTheme ? darkThemeMessage : lightThemeMessage;
+        return new int[]{
+            color[0] >>> darken,
+            color[1] >>> darken,
+            color[2] >>> darken
+        };
     }
 
     static void jbossLoggingHSVtoRGBFormula(int LEVEL) {
@@ -209,7 +230,8 @@ public class JBossLoggingApp {
             {0, 128, 0},     // INFO - Green
             {255, 165, 0},   // WARN - Orange
             {255, 0, 0},     // ERROR - Red
-            {128, 0, 0}      // FATAL - Dark Red
+            {128, 0, 0},     // FATAL - Dark Red
+            {100, 120, 100}  // MESSAGE - Dark Green
         };
 
         int[][] darkThemeColors = {
@@ -218,7 +240,8 @@ public class JBossLoggingApp {
             {150, 255, 150}, // INFO - Bright Green
             {255, 200, 100}, // WARN - Bright Orange
             {255, 100, 100}, // ERROR - Bright Red
-            {255, 50, 50}    // FATAL - Bright Red
+            {255, 50, 50},   // FATAL - Bright Red
+            {180, 220, 180}  // MESSAGE - Light Green
         };
 
         int colorIndex = switch (LEVEL) {
