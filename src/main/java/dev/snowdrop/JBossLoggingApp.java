@@ -54,20 +54,17 @@ public class JBossLoggingApp {
             for (int num: List.of(0)) {
                 darken = num;
 
-                System.out.println("\n***********************************************************************************");
+                System.out.println("*".repeat(70));
                 System.out.printf("Original jboss RGB calculation using darken: %d\n", darken);
-                System.out.println("*************************************************************************************");
+                System.out.println("*".repeat(70));
                 printUsingJBossHSVtoRGBFormula();
+                System.out.println();
 
-                // System.out.println("\n***********************************************************************************");
-                // System.out.printf("New RGB calculation for: %s Theme using darken: %d\n", themeType, darken);
-                // System.out.println("*************************************************************************************");
-                // printUsingNewHSVtoRGBFormula(darkTheme);
-
-                System.out.println("\n***********************************************************************************");
-                System.out.printf("Alternative RGB calculation for: %s Theme using darken: %d\n", themeType, darken);
-                System.out.println("*************************************************************************************");
+                System.out.println("*".repeat(70));
+                System.out.printf("New RGB calculation for: %s Theme using darken: %d\n", themeType, darken);
+                System.out.println("*".repeat(70));
                 printHSVtoRGBwithFixedBrightColors(darkTheme);
+                System.out.println();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -140,26 +137,6 @@ public class JBossLoggingApp {
         }
     }
 
-    static void printUsingNewHSVtoRGBFormula(boolean darkTheme) throws NoSuchFieldException, IllegalAccessException {
-        for (String LEVEL: Arrays.asList("TRACE","DEBUG","INFO","WARN","ERROR", "FATAL")) {
-            StringBuilder target = new StringBuilder();
-
-            newHSVtoRGBFormula((int) JBossLoggingApp.class.getDeclaredField(LEVEL + "_LEVEL").get(null), darkTheme);
-
-            startColor(target, 38, true, r,g,b);
-            target.append(LEVEL);
-            target.append(String.format(" - RGB: (%d, %d, %d)", r, g, b));
-            endColor(target, MODE);
-
-            int[] messageColor = getMessageColor(darkTheme);
-            startColor(target, 38, true, messageColor[0], messageColor[1], messageColor[2]);
-            target.append(" log message.");
-            endColor(target, MODE);
-
-            System.out.printf("%s\n", target);
-        }
-    }
-
     static void printHSVtoRGBwithFixedBrightColors(boolean darkTheme) throws NoSuchFieldException, IllegalAccessException {
         for (String LEVEL: Arrays.asList("TRACE","DEBUG","INFO","WARN","ERROR", "FATAL")) {
             StringBuilder target = new StringBuilder();
@@ -194,21 +171,44 @@ public class JBossLoggingApp {
     }
 
     /**
-     * Gets the theme-appropriate RGB color for log messages (colorIndex 6).
+     * Alternative method to calculate message colors using mathematical formulas
+     * similar to the level color calculations instead of hard-coded RGB values.
      * @param darkTheme true for dark theme, false for light theme
      * @return array of [r, g, b] values for log message color
      */
     static int[] getMessageColor(boolean darkTheme) {
-        // Message colors (colorIndex 6)
-        int[] lightThemeMessage = {100, 120, 100};  // Dark Green
-        int[] darkThemeMessage = {180, 220, 180};   // Light Green
+        // Use a fixed hue for green (120 degrees in HSV color space)
+        // Green is typically around 120 degrees on the color wheel
+        float messageHue = 120.0f / 360.0f; // Convert to 0-1 range for HSBtoRGB
 
-        int[] color = darkTheme ? darkThemeMessage : lightThemeMessage;
-        return new int[]{
-            color[0] >>> darken,
-            color[1] >>> darken,
-            color[2] >>> darken
-        };
+        float saturation;
+        float brightness;
+        int minBrightness;
+        int maxBrightness;
+
+        if (darkTheme) {
+            // For dark themes, use higher saturation and brightness for better visibility
+            saturation = 0.4f;      // Medium saturation to avoid overly vivid colors
+            brightness = 0.85f;     // High brightness for good contrast on dark backgrounds
+            minBrightness = 150;    // Ensure minimum brightness
+            maxBrightness = 255;
+        } else {
+            // For light themes, use lower brightness and higher saturation
+            saturation = 0.6f;      // Higher saturation for good visibility on light backgrounds
+            brightness = 0.5f;      // Medium brightness to maintain readability
+            minBrightness = 60;
+            maxBrightness = 180;
+        }
+
+        // Convert HSB to RGB using Java's built-in method
+        int rgb = java.awt.Color.HSBtoRGB(messageHue, saturation, brightness);
+
+        // Extract RGB components and apply brightness constraints
+        int r = Math.min(Math.max((rgb >> 16) & 0xFF, minBrightness), maxBrightness) >>> darken;
+        int g = Math.min(Math.max((rgb >> 8) & 0xFF, minBrightness), maxBrightness) >>> darken;
+        int b = Math.min(Math.max(rgb & 0xFF, minBrightness), maxBrightness) >>> darken;
+
+        return new int[]{r, g, b};
     }
 
     static void jbossLoggingHSVtoRGBFormula(int LEVEL) {
@@ -216,46 +216,6 @@ public class JBossLoggingApp {
         r = ((level < 300 ? 0 : (level - 300) * (255 - SATURATION) / 300) + SATURATION) >>> darken;
         g = ((300 - abs(level - 300)) * (255 - SATURATION) / 300 + SATURATION) >>> darken;
         b = ((level > 300 ? 0 : level * (255 - SATURATION) / 300) + SATURATION) >>> darken;
-    }
-
-    /**
-     * Enhanced RGB calculation method that provides better visibility for dark themes.
-     * This method ensures TRACE level has sufficient brightness while maintaining
-     * good color differentiation across all log levels.
-     * <p>
-     * Key improvements:
-     * - Minimum brightness threshold to ensure visibility on dark backgrounds
-     * - Better color distribution across the spectrum
-     * - Optional dark theme mode with inverted brightness scaling
-     */
-    static void newHSVtoRGBFormula(int LEVEL, boolean darkTheme) {
-        final int level = Math.max(Math.min(LEVEL, LARGEST_LEVEL), SMALLEST_LEVEL) - SMALLEST_LEVEL;
-
-        // Base brightness - higher minimum for dark themes
-        int minBrightness = darkTheme ? 120 : 60;
-        int maxBrightness = darkTheme ? 255 : 200;
-
-        // Calculate hue based on level (0-600 range mapped to color spectrum)
-        float hue = level / 600.0f;
-
-        // For dark themes, boost saturation and brightness for lower levels
-        float saturation = darkTheme ? 0.8f : 0.7f;
-        float brightness;
-
-        if (darkTheme) {
-            // In dark mode, make TRACE brighter than other levels for visibility
-            brightness = level <= 100 ? 0.9f : 0.6f + (1.0f - hue) * 0.3f;
-        } else {
-            // In light mode, use traditional scaling
-            brightness = 0.4f + hue * 0.5f;
-        }
-
-        // Convert HSB to RGB
-        int rgb = java.awt.Color.HSBtoRGB(hue, saturation, brightness);
-
-        r = Math.min(Math.max((rgb >> 16) & 0xFF, minBrightness), maxBrightness) >>> darken;
-        g = Math.min(Math.max((rgb >> 8) & 0xFF, minBrightness), maxBrightness) >>> darken;
-        b = Math.min(Math.max(rgb & 0xFF, minBrightness), maxBrightness) >>> darken;
     }
 
     /**
