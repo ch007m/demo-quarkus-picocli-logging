@@ -53,38 +53,38 @@ public class JBossLoggingApp {
                 System.out.println("\n***********************************************************************************");
                 System.out.printf("Original jboss RGB calculation using darken: %d\n", darken);
                 System.out.println("*************************************************************************************");
-                printMessages();
+                printUsingJBossHSVtoRGBFormula();
 
                 System.out.println("\n***********************************************************************************");
                 System.out.printf("New RGB calculation for: Light Theme using darken: %d\n", darken);
                 System.out.println("*************************************************************************************");
-                printMessages2(false);
+                printUsingNewHSVtoRGBFormula(false);
 
                 System.out.println("\n***********************************************************************************");
                 System.out.printf("New RGB calculation for: Dark Theme using darken: %d\n", darken);
                 System.out.println("*************************************************************************************");
-                printMessages2(true);
+                printUsingNewHSVtoRGBFormula(true);
 
                 System.out.println("\n***********************************************************************************");
                 System.out.printf("Alternative RGB calculation for: Light Theme using darken: %d\n", darken);
                 System.out.println("*************************************************************************************");
-                printMessages2Alt(false);
+                printHSVtoRGBwithFixedBrightColors(false);
 
                 System.out.println("\n***********************************************************************************");
                 System.out.printf("Alternative RGB calculation for: Dark Theme using darken: %d\n", darken);
                 System.out.println("*************************************************************************************");
-                printMessages2Alt(true);
+                printHSVtoRGBwithFixedBrightColors(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    static void printMessages() throws NoSuchFieldException, IllegalAccessException {
+    static void printUsingJBossHSVtoRGBFormula() throws NoSuchFieldException, IllegalAccessException {
         for (String LEVEL: Arrays.asList("TRACE","DEBUG","INFO","WARN","ERROR", "FATAL")) {
             StringBuilder target = new StringBuilder();
 
-            calculateRGB((int) JBossLoggingApp.class.getDeclaredField(LEVEL + "_LEVEL").get(null));
+            jbossLoggingHSVtoRGBFormula((int) JBossLoggingApp.class.getDeclaredField(LEVEL + "_LEVEL").get(null));
 
             startColor(target, 38, true, r,g,b);
             target.append(LEVEL);
@@ -99,11 +99,11 @@ public class JBossLoggingApp {
         }
     }
 
-    static void printMessages2(boolean darkTheme) throws NoSuchFieldException, IllegalAccessException {
+    static void printUsingNewHSVtoRGBFormula(boolean darkTheme) throws NoSuchFieldException, IllegalAccessException {
         for (String LEVEL: Arrays.asList("TRACE","DEBUG","INFO","WARN","ERROR", "FATAL")) {
             StringBuilder target = new StringBuilder();
 
-            calculateRGB2((int) JBossLoggingApp.class.getDeclaredField(LEVEL + "_LEVEL").get(null), darkTheme);
+            newHSVtoRGBFormula((int) JBossLoggingApp.class.getDeclaredField(LEVEL + "_LEVEL").get(null), darkTheme);
 
             startColor(target, 38, true, r,g,b);
             target.append(LEVEL);
@@ -118,11 +118,11 @@ public class JBossLoggingApp {
         }
     }
 
-    static void printMessages2Alt(boolean darkTheme) throws NoSuchFieldException, IllegalAccessException {
+    static void printHSVtoRGBwithFixedBrightColors(boolean darkTheme) throws NoSuchFieldException, IllegalAccessException {
         for (String LEVEL: Arrays.asList("TRACE","DEBUG","INFO","WARN","ERROR", "FATAL")) {
             StringBuilder target = new StringBuilder();
 
-            calculateRGB2Alt((int) JBossLoggingApp.class.getDeclaredField(LEVEL + "_LEVEL").get(null), darkTheme);
+            hsvToRGBwithFixedBrightColors((int) JBossLoggingApp.class.getDeclaredField(LEVEL + "_LEVEL").get(null), darkTheme);
 
             startColor(target, 38, true, r,g,b);
             target.append(LEVEL);
@@ -150,7 +150,7 @@ public class JBossLoggingApp {
         return Math.min(Math.max(0, color), 255);
     }
 
-    static void calculateRGB(int LEVEL) {
+    static void jbossLoggingHSVtoRGBFormula(int LEVEL) {
         final int level = Math.max(Math.min(LEVEL, LARGEST_LEVEL), SMALLEST_LEVEL) - SMALLEST_LEVEL;
         r = ((level < 300 ? 0 : (level - 300) * (255 - SATURATION) / 300) + SATURATION) >>> darken;
         g = ((300 - abs(level - 300)) * (255 - SATURATION) / 300 + SATURATION) >>> darken;
@@ -167,7 +167,7 @@ public class JBossLoggingApp {
      * - Better color distribution across the spectrum
      * - Optional dark theme mode with inverted brightness scaling
      */
-    static void calculateRGB2(int LEVEL, boolean darkTheme) {
+    static void newHSVtoRGBFormula(int LEVEL, boolean darkTheme) {
         final int level = Math.max(Math.min(LEVEL, LARGEST_LEVEL), SMALLEST_LEVEL) - SMALLEST_LEVEL;
 
         // Base brightness - higher minimum for dark themes
@@ -201,7 +201,7 @@ public class JBossLoggingApp {
      * Alternative RGB calculation with fixed bright colors for dark themes.
      * Uses predefined color palettes optimized for terminal visibility.
      */
-    static void calculateRGB2Alt(int LEVEL, boolean darkTheme) {
+    static void hsvToRGBwithFixedBrightColors(int LEVEL, boolean darkTheme) {
         // Predefined color palettes for better terminal visibility
         int[][] lightThemeColors = {
             {128, 0, 128},   // TRACE - Purple
@@ -221,16 +221,15 @@ public class JBossLoggingApp {
             {255, 50, 50}    // FATAL - Bright Red
         };
 
-        int colorIndex;
-        switch (LEVEL) {
-            case 400: colorIndex = 0; break;  // TRACE
-            case 500: colorIndex = 1; break;  // DEBUG
-            case 800: colorIndex = 2; break;  // INFO
-            case 900: colorIndex = 3; break;  // WARN
-            case 1000: colorIndex = 4; break; // ERROR
-            case 1100: colorIndex = 5; break; // FATAL
-            default: colorIndex = 0;
-        }
+        int colorIndex = switch (LEVEL) {
+            case 400 -> 0;  // TRACE
+            case 500 -> 1;  // DEBUG
+            case 800 -> 2;  // INFO
+            case 900 -> 3;  // WARN
+            case 1000 -> 4; // ERROR
+            case 1100 -> 5; // FATAL
+            default -> 0;
+        };
 
         int[][] palette = darkTheme ? darkThemeColors : lightThemeColors;
         r = palette[colorIndex][0] >>> darken;
