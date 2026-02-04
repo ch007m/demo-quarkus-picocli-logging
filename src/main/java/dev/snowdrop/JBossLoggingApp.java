@@ -37,9 +37,9 @@ public class JBossLoggingApp {
         try {
             for (int num: Arrays.asList(0,1)) {
                 darken = num;
-                System.out.println("\n################################################################################");
+                System.out.println("\n*****************************************************************************************************");
                 System.out.printf("The jboss way to calculate RGB colors for messages to log using darken: %d\n", darken);
-                System.out.println("################################################################################");
+                System.out.println("*****************************************************************************************************");
                 printMessages();
             }
         } catch (Exception e) {
