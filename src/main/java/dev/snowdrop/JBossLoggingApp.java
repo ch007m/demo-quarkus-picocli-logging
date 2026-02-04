@@ -9,7 +9,7 @@ import static java.lang.Math.abs;
 
 /**
  * Project able to calculate the RGB codes using HSV values
- *
+ * <p>
  * Code inspired from:
  * - ColorUtil: https://github.com/jboss-logging/jboss-logmanager/blob/main/src/main/java/org/jboss/logmanager/formatters/ColorUtil.java#L37-L49
  * - ColorPatternFormatter: https://github.com/jboss-logging/jboss-logmanager/blob/main/src/main/java/org/jboss/logmanager/formatters/ColorPatternFormatter.java#L187-L195
@@ -37,9 +37,9 @@ public class JBossLoggingApp {
         try {
             for (int num: Arrays.asList(0,1)) {
                 darken = num;
-                System.out.println("\n*****************************************************************************************************");
+                System.out.println("\n***********************************************************************************");
                 System.out.printf("The jboss way to calculate RGB colors for messages to log using darken: %d\n", darken);
-                System.out.println("*****************************************************************************************************");
+                System.out.println("*************************************************************************************");
                 printMessages();
             }
         } catch (Exception e) {
@@ -55,6 +55,7 @@ public class JBossLoggingApp {
 
             startColor(target, 38, true, r,g,b);
             target.append(LEVEL);
+            target.append(String.format(" - RGB: (%d, %d, %d)", r, g, b));
             endColor(target, MODE);
 
             startColor(target, 38, true, 176, 208, 176);
