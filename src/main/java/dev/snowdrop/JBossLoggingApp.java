@@ -46,6 +46,10 @@ public class JBossLoggingApp {
 
     public static void main(String[] args) {
         try {
+            // Parse command line arguments
+            boolean darkTheme = parseDarkThemeArgument(args);
+            String themeType = darkTheme ? "Dark" : "Light";
+
             // Don't use darken values > 0 as the result is really dark ...
             for (int num: List.of(0)) {
                 darken = num;
@@ -55,29 +59,65 @@ public class JBossLoggingApp {
                 System.out.println("*************************************************************************************");
                 printUsingJBossHSVtoRGBFormula();
 
-                System.out.println("\n***********************************************************************************");
-                System.out.printf("New RGB calculation for: Light Theme using darken: %d\n", darken);
-                System.out.println("*************************************************************************************");
-                printUsingNewHSVtoRGBFormula(false);
+                // System.out.println("\n***********************************************************************************");
+                // System.out.printf("New RGB calculation for: %s Theme using darken: %d\n", themeType, darken);
+                // System.out.println("*************************************************************************************");
+                // printUsingNewHSVtoRGBFormula(darkTheme);
 
                 System.out.println("\n***********************************************************************************");
-                System.out.printf("New RGB calculation for: Dark Theme using darken: %d\n", darken);
+                System.out.printf("Alternative RGB calculation for: %s Theme using darken: %d\n", themeType, darken);
                 System.out.println("*************************************************************************************");
-                printUsingNewHSVtoRGBFormula(true);
-
-                System.out.println("\n***********************************************************************************");
-                System.out.printf("Alternative RGB calculation for: Light Theme using darken: %d\n", darken);
-                System.out.println("*************************************************************************************");
-                printHSVtoRGBwithFixedBrightColors(false);
-
-                System.out.println("\n***********************************************************************************");
-                System.out.printf("Alternative RGB calculation for: Dark Theme using darken: %d\n", darken);
-                System.out.println("*************************************************************************************");
-                printHSVtoRGBwithFixedBrightColors(true);
+                printHSVtoRGBwithFixedBrightColors(darkTheme);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Parses command line arguments to determine if dark theme should be used.
+     *
+     * @param args command line arguments
+     * @return true for dark theme, false for light theme
+     */
+    static boolean parseDarkThemeArgument(String[] args) {
+        if (args.length == 0) {
+            printUsageAndExit();
+        }
+
+        String arg = args[0].toLowerCase();
+        return switch (arg) {
+            case "dark", "d" -> true;
+            case "light", "l" -> false;
+            case "--help", "-h", "help" -> {
+                printUsageAndExit();
+                yield false; // This line will never be reached
+            }
+            default -> {
+                System.err.printf("Invalid argument: %s%n", args[0]);
+                printUsageAndExit();
+                yield false; // This line will never be reached
+            }
+        };
+    }
+
+    /**
+     * Prints usage information and exits the program.
+     */
+    static void printUsageAndExit() {
+        System.out.println("Usage: java JBossLoggingApp <theme>");
+        System.out.println();
+        System.out.println("Arguments:");
+        System.out.println("  theme    Specify the theme type:");
+        System.out.println("           - 'dark', 'd'  : Use dark theme colors");
+        System.out.println("           - 'light', 'l' : Use light theme colors");
+        System.out.println();
+        System.out.println("Examples:");
+        System.out.println("  jbang ./src/main/java/dev/snowdrop/JBossLoggingApp.java dark");
+        System.out.println("  jbang ./src/main/java/dev/snowdrop/JBossLoggingApp.java light");
+        System.out.println("  jbang ./src/main/java/dev/snowdrop/JBossLoggingApp.java d");
+        System.out.println("  jbang ./src/main/java/dev/snowdrop/JBossLoggingApp.java l");
+        System.exit(1);
     }
 
     static void printUsingJBossHSVtoRGBFormula() throws NoSuchFieldException, IllegalAccessException {
@@ -228,7 +268,7 @@ public class JBossLoggingApp {
             {128, 0, 128},   // TRACE - Purple
             {0, 128, 255},   // DEBUG - Blue
             {0, 128, 0},     // INFO - Green
-            {255, 165, 0},   // WARN - Orange
+            {192, 129, 66},  // WARN - Orange => old: {255, 165, 0},
             {255, 0, 0},     // ERROR - Red
             {128, 0, 0},     // FATAL - Dark Red
             {100, 120, 100}  // MESSAGE - Dark Green
