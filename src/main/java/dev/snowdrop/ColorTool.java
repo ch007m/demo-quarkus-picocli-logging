@@ -43,13 +43,9 @@ public class ColorTool {
         String startColor = String.format("\u001B[38;2;%d;%d;%dm", c.getRed(), c.getGreen(), c.getBlue());
         String reset = "\u001B[0m";
 
-        float h, s, v;
-        h = 140f;
-        s = 0.10f;
-        v = 0.58f;
-        int rgb = Color.HSBtoRGB(h, s, v);
-        c = new Color(rgb);
-        String msgColor = String.format("\u001B[38;2;%d;%d;%dm", c.getRed(), c.getGreen(), c.getBlue());;
+        // Message HSB
+        c = new Color(Color.HSBtoRGB(140f, 0.10f,0.58f));
+        String msgColor = String.format("\u001B[38;2;%d;%d;%dm", c.getRed(), c.getGreen(), c.getBlue());
 
         System.out.printf("%s%-6s%s %s%s%s%n",
             startColor, level, reset, msgColor, logMsg, reset);
@@ -70,5 +66,43 @@ public class ColorTool {
         //System.out.printf("RGB: (%3d, %3d, %3d) - H:%.0f S:%.0f%% V:%.0f%%\n",
         //    c.getRed(), c.getGreen(), c.getBlue(), (float)h, s * 100, v * 100);
         return c;
+    }
+
+    static class HSB {
+        private float hue;
+        private float saturation;
+        private float brightness;
+
+        private HSB() {
+            // Default constructor for fluent API
+        }
+
+        public static HSB withHue(float h) {
+            HSB hsb = new HSB();
+            hsb.hue = h;
+            return hsb;
+        }
+
+        public HSB withSaturation(float s) {
+            this.saturation = s;
+            return this;
+        }
+
+        public HSB withBrightness(float b) {
+            this.brightness = b;
+            return this;
+        }
+
+        public float getHue() {
+            return hue;
+        }
+
+        public float getSaturation() {
+            return saturation;
+        }
+
+        public float getBrightness() {
+            return brightness;
+        }
     }
 }
