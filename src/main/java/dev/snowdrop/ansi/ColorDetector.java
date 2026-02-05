@@ -12,6 +12,7 @@ import org.aesh.terminal.utils.TerminalColorCapability;
 import java.util.Arrays;
 import java.util.List;
 
+// https://textual.textualize.io/api/color/
 public class ColorDetector {
     private static Connection connection;
 
@@ -33,13 +34,32 @@ public class ColorDetector {
 
             TerminalColorCapability cap = TerminalColorCapability.builder().build();
 
+            // Ansi name: White
             int timeStampCode = get256ColorIndex(192, 192, 192);
+            System.out.println("Time Stamp Code : " + timeStampCode);
             var timeStampRGB = connection.queryOsc(oscCode, String.format("%d;?", timeStampCode), 500,
                 input -> parseOscResponse(input, oscCode, String.format("%d;?", timeStampCode), timeStampCode));
 
+            // Ansi color name
             int msgCode = get256ColorIndex(176, 208, 176);
+            System.out.println("Message Code : " + msgCode);
             var msgRGB = connection.queryOsc(oscCode, String.format("%d;?", msgCode), 500,
                 input -> parseOscResponse(input, oscCode, String.format("%d;?", msgCode), msgCode));
+
+            int lightGray = get256ColorIndex(208,208,208);
+            System.out.println("Light Gray : " + lightGray);
+            var lightGrayRGB = connection.queryOsc(oscCode, String.format("%d;?", lightGray), 500,
+                input -> parseOscResponse(input, oscCode, String.format("%d;?", lightGray), lightGray));
+
+            int azureBlue = get256ColorIndex(68, 136, 255);
+            System.out.println("Azure Blue : " + azureBlue);
+            var azureBlueRGB = connection.queryOsc(oscCode, String.format("%d;?", azureBlue), 500,
+                input -> parseOscResponse(input, oscCode, String.format("%d;?", azureBlue), azureBlue));
+
+            int seaBlue = get256ColorIndex(68, 170, 68);
+            System.out.println("Sea Blue : " + seaBlue);
+            var seaBlueRGB = connection.queryOsc(oscCode, String.format("%d;?", seaBlue), 500,
+                input -> parseOscResponse(input, oscCode, String.format("%d;?", seaBlue), seaBlue));
 
 
             for (int colorCode : List.of(0,1,2,3,4,5,6,7)) {
@@ -55,12 +75,12 @@ public class ColorDetector {
                 ANSIBuilder builder = ANSIBuilder.builder(cap)
                     .rgb(timeStampRGB[0],timeStampRGB[1],timeStampRGB[2]).append("2026-02-03 14:29:29,797").append(" ")
                     .rgb(r,g,b).append(AnsiColor.getNameByIndex(colorCode)).append("  ")
-                    .rgb(208, 208, 208).append("[")
-                    .rgb(68, 136, 255).append("dev.sno.GreetingResource")
-                    .rgb(208, 208, 208).append("]").append(" ")
-                    .rgb(208, 208, 208).append("[")
-                    .rgb(68, 170, 68).append("executor-thread-1")
-                    .rgb(208, 208, 208).append("]").append(" ")
+                    .rgb(lightGrayRGB[0],lightGrayRGB[1],lightGrayRGB[2]).append("[")
+                    .rgb(azureBlueRGB[0],azureBlueRGB[1],azureBlueRGB[2]).append("dev.sno.GreetingResource")
+                    .rgb(lightGrayRGB[0],lightGrayRGB[1],lightGrayRGB[2]).append("]").append(" ")
+                    .rgb(lightGrayRGB[0],lightGrayRGB[1],lightGrayRGB[2]).append("[")
+                    .rgb(seaBlueRGB[0],seaBlueRGB[1],seaBlueRGB[2]).append("executor-thread-1")
+                    .rgb(lightGrayRGB[0],lightGrayRGB[1],lightGrayRGB[2]).append("]").append(" ")
                     .rgb(msgRGB[0],msgRGB[1],msgRGB[2]).append("info log message");
                 System.out.println(builder.toString());
 
