@@ -1,7 +1,7 @@
 /// usr/bin/env jbang “$0” “$@” ; exit $?
 //DEPS org.aesh:terminal-tty:3.0-dev
 
-package dev.snowdrop;
+package dev.snowdrop.ansi;
 
 import org.aesh.terminal.tty.TerminalConnection;
 import org.aesh.terminal.utils.ANSIBuilder;

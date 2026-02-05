@@ -13,6 +13,7 @@
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.version>3.30.7</quarkus.platform.version>
+        <aesh.version>3.0</aesh.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.5.4</surefire-plugin.version>
     </properties>
@@ -59,7 +60,12 @@
         <dependency>
             <groupId>org.aesh</groupId>
             <artifactId>terminal-tty</artifactId>
-            <version>3.0-dev</version>
+            <version>${aesh.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.tamboui</groupId>
+            <artifactId>tamboui-tui</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>

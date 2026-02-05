@@ -1,5 +1,5 @@
 /// usr/bin/env jbang "$0" "$@"; exit $?
-package dev.snowdrop;
+package dev.snowdrop.ansi;
 
 import java.awt.*;
 
