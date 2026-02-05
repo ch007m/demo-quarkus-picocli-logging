@@ -4,7 +4,7 @@ package dev.snowdrop;
 import java.awt.*;
 
 /**
- * See the color.org tool get the HSB or RGB or ... colors: https://colorizer.org/
+ * See the color.org tool to play with HSB or RGB colors: https://colorizer.org/
  */
 public class ColorTool {
 
@@ -38,17 +38,25 @@ public class ColorTool {
     static void render(String level, int hueValue, Theme theme) {
         var logMsg = "This is a log message. The application has well started and is running on port: 8080.";
 
+        // Calculate the color code for the level according to its Hue value and Theme
         Color c = calculateColor(hueValue, theme);
 
-        String startColor = String.format("\u001B[38;2;%d;%d;%dm", c.getRed(), c.getGreen(), c.getBlue());
+        String loggingLevelColorCode = String.format("\u001B[38;2;%d;%d;%dm", c.getRed(), c.getGreen(), c.getBlue());
         String reset = "\u001B[0m";
 
-        // Message HSB
-        c = new Color(Color.HSBtoRGB(140f, 0.10f,0.58f));
-        String msgColor = String.format("\u001B[38;2;%d;%d;%dm", c.getRed(), c.getGreen(), c.getBlue());
-
         System.out.printf("%s%-6s%s %s%s%s%n",
-            startColor, level, reset, msgColor, logMsg, reset);
+            loggingLevelColorCode, level, reset,
+            messageColorCode(theme), logMsg, reset);
+    }
+
+    static String messageColorCode(Theme theme) {
+        Color c;
+        if (theme == Theme.DARK) {
+            c = new Color(Color.HSBtoRGB(140f, 0.10f, 0.80f));
+        } else {
+            c = new Color(Color.HSBtoRGB(140f, 0.10f, 0.40f));
+        }
+        return String.format("\u001B[38;2;%d;%d;%dm", c.getRed(), c.getGreen(), c.getBlue());
     }
 
     static Color calculateColor(int h, Theme theme) {
