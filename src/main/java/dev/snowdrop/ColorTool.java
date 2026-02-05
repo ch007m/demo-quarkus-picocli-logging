@@ -38,15 +38,23 @@ public class ColorTool {
     static void render(String level, int hueValue, Theme theme) {
         var logMsg = "This is a log message. The application has well started and is running on port: 8080.";
 
-        // Calculate the color code for the level according to its Hue value and Theme
-        Color c = calculateColor(hueValue, theme);
-
-        String loggingLevelColorCode = String.format("\u001B[38;2;%d;%d;%dm", c.getRed(), c.getGreen(), c.getBlue());
+        // Ansi terminal reset code
         String reset = "\u001B[0m";
 
+        // Calculate the color code for the level according to its Hue value and Theme
+        String loggingLevelColorCode = levelColorCode(hueValue, theme);
+
+        String messageColorCode = messageColorCode(theme);
+
+        // Log the message
         System.out.printf("%s%-6s%s %s%s%s%n",
             loggingLevelColorCode, level, reset,
-            messageColorCode(theme), logMsg, reset);
+            messageColorCode, logMsg, reset);
+    }
+
+    static String levelColorCode(int hueValue, Theme theme) {
+        Color c = calculateColor(hueValue, theme);
+        return String.format("\u001B[38;2;%d;%d;%dm", c.getRed(), c.getGreen(), c.getBlue());
     }
 
     static String messageColorCode(Theme theme) {
