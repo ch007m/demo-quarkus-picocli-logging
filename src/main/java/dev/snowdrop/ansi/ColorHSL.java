@@ -75,14 +75,14 @@ public class ColorHSL {
             .append(level, h, s)     // Blue Hue
             .spacer(" ")
             .append("[", 0, 0)
-            .append("dev.sno.GreetingResource", 218, 100)
+            .append("dev.sno.GreetingResource", 220, 80)
             .append("]", 0, 0)
             .spacer(" ")
             .append("[", 0, 0)
-            .append("executor-thread-1", 120, 42)
+            .append("executor-thread-1", 120, 50)
             .append("]", 0, 0)
             .spacer(" ")
-            .append("This is a log message", 110, 80) // Green Hue
+            .append("This is a log message", 90, 10) // Green Hue
             .toString();
         System.out.println(logLine);
     }
