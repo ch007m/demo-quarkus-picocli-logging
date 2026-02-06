@@ -63,8 +63,28 @@ public class ColorHSL {
                     System.out.println("Options:");
                     System.out.println("  --random-logs <number>, -r <number>  Generate random log messages");
                     System.out.println("                                       Number is optional (default: 50)");
+                    System.out.println("  --saturation <value>, -s <value>     Set HSL saturation (0-100, default: 50)");
                     System.out.println("  --help, -h                          Show this help message");
                     return;
+                }
+            }
+
+            // Check for saturation option
+            for (int i = 0; i < args.length; i++) {
+                if ("--saturation".equals(args[i]) || "-s".equals(args[i])) {
+                    if (i + 1 < args.length) {
+                        try {
+                            int val = Integer.parseInt(args[i + 1]);
+                            if (val < 0 || val > 100) {
+                                System.out.println("Warning: Saturation must be 0-100, using default (50)");
+                            } else {
+                                saturation = val;
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Warning: No valid saturation provided, using default (50)");
+                        }
+                    }
+                    break;
                 }
             }
 
@@ -177,10 +197,10 @@ public class ColorHSL {
             .append("]", 0, 0)
             .spacer(" ")
             .append("(", 0, 0)
-            .append("executor-thread-1", 120, 50)  // Thread
+            .append("executor-thread-1", 120, 20)  // Thread
             .append(")", 0, 0)
             .spacer(" ")
-            .append(message, 90, 10) // Lorem ipsum message
+            .append(message, 90, 0) // Lorem ipsum message
             .toString();
         System.out.println(logLine);
     }
