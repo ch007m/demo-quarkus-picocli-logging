@@ -53,7 +53,7 @@ public class ColorHSL {
             System.out.printf("Theme detected: %s%n", theme);
             System.out.printf("Is Theme dark: %s%n", isDark);
 
-            //printWheelColors();
+            printWheelColors();
 
             System.out.println("-".repeat(50));
             printLogMessage("TRACE",260,80);
@@ -106,7 +106,7 @@ public class ColorHSL {
             System.out.println("-----|--------------------------------------------");
 
             for (int h = 0; h <= 360; h += 20) {
-                int[] rgb = hslToRgb(h, s, activeL);
+                int[] rgb = FluentLogger.hslToRgb(h, s, activeL);
 
                 // Build the preview string
                 String sample = ANSIBuilder.builder(cap)
@@ -117,32 +117,6 @@ public class ColorHSL {
                 System.out.printf("%3d° | %s%n", h, sample);
             }
         }
-    }
-
-    /**
-     * Converts HSL values to RGB array.
-     * h [0, 360], s [0, 100], l [0, 100]
-     */
-    private static int[] hslToRgb(float h, float s, float l) {
-        s /= 100f;
-        l /= 100f;
-        float c = (1 - Math.abs(2 * l - 1)) * s;
-        float x = c * (1 - Math.abs((h / 60f) % 2 - 1));
-        float m = l - c / 2;
-        float r = 0, g = 0, b = 0;
-
-        if (h < 60) { r = c; g = x; }
-        else if (h < 120) { r = x; g = c; }
-        else if (h < 180) { g = c; b = x; }
-        else if (h < 240) { g = x; b = c; }
-        else if (h < 300) { r = x; b = c; }
-        else { r = c; b = x; }
-
-        return new int[]{
-            (int) ((r + m) * 255),
-            (int) ((g + m) * 255),
-            (int) ((b + m) * 255)
-        };
     }
 
     public static class FluentLogger {
