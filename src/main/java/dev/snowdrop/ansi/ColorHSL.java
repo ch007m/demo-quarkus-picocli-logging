@@ -70,19 +70,19 @@ public class ColorHSL {
 
     private static void printLogMessage(String level, int h, int s) {
         String logLine = new FluentLogger(isDark)
-            .append("2026-02-03 14:29:28",0,0)
+            .append("2026-02-03 14:29:28",0,0)  // Timestamp
             .spacer(" ")
-            .append(level, h, s)     // Blue Hue
+            .append(level, h, s)                            // Level
             .spacer(" ")
             .append("[", 0, 0)
-            .append("dev.sno.GreetingResource", 220, 80)
+            .append("dev.sno.GreetingResource", 220, 80) // Package/Class
             .append("]", 0, 0)
             .spacer(" ")
             .append("[", 0, 0)
-            .append("executor-thread-1", 120, 50)
+            .append("executor-thread-1", 120, 50)  // Thread
             .append("]", 0, 0)
             .spacer(" ")
-            .append("This is a log message", 90, 10) // Green Hue
+            .append("This is a log message", 90, 10) // Log message
             .toString();
         System.out.println(logLine);
     }
