@@ -10,6 +10,7 @@ import org.aesh.terminal.utils.TerminalColorCapability;
 import org.aesh.terminal.utils.TerminalTheme;
 
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * Visualizes HSL Colors across a 360-degree Hue wheel.
@@ -53,19 +54,133 @@ public class ColorHSL {
             System.out.printf("Theme detected: %s%n", theme);
             System.out.printf("Is Theme dark: %s%n", isDark);
 
-            printWheelColors();
+            // Check for help option first
+            for (String arg : args) {
+                if ("--help".equals(arg) || "-h".equals(arg)) {
+                    System.out.println("Usage: java ColorHSL [options]");
+                    System.out.println("Options:");
+                    System.out.println("  --random-logs <number>, -r <number>  Generate random log messages");
+                    System.out.println("                                       Number is optional (default: 50)");
+                    System.out.println("  --help, -h                          Show this help message");
+                    return;
+                }
+            }
 
-            System.out.println("-".repeat(50));
-            printLogMessage("TRACE",260,80);
-            printLogMessage("DEBUG",220,80);
-            printLogMessage("INFO",60,80);
-            printLogMessage("WARN",40,80);
-            printLogMessage("ERROR",20,80);
-            printLogMessage("FATAL",0,80);
+            // Check for random logs option
+            boolean generateRandomLogs = false;
+            int numberOfMessages = 50; // default value
+
+            for (int i = 0; i < args.length; i++) {
+                if ("--random-logs".equals(args[i]) || "-r".equals(args[i])) {
+                    generateRandomLogs = true;
+                    // Check if next argument is a number
+                    if (i + 1 < args.length) {
+                        try {
+                            numberOfMessages = Integer.parseInt(args[i + 1]);
+                            if (numberOfMessages <= 0) {
+                                numberOfMessages = 50; // reset to default if invalid
+                                System.out.println("Warning: Invalid number provided, using default (50)");
+                            }
+                        } catch (NumberFormatException e) {
+                            // Not a number, use default
+                            System.out.println("Warning: No valid number provided, using default (50)");
+                        }
+                    }
+                    break;
+                }
+            }
+
+            if (generateRandomLogs) {
+                System.out.println("-".repeat(50));
+                System.out.println("Generating " + numberOfMessages + " random log messages...");
+                System.out.println("-".repeat(50));
+                generateRandomLogMessages(numberOfMessages);
+            } else {
+                // printWheelColors();
+
+                System.out.println("-".repeat(50));
+                printLogMessage("TRACE",260,80);
+                printLogMessage("DEBUG",220,80);
+                printLogMessage("INFO",120,80);
+                printLogMessage("WARN",40,80);
+                printLogMessage("ERROR",20,80);
+                printLogMessage("FATAL",0,80);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void generateRandomLogMessages(int numberOfMessages) {
+        Random random = new Random();
+        String[] levels = {"TRACE", "DEBUG", "INFO", "INFO", "INFO", "INFO", "WARN", "ERROR", "FATAL"};
+        int[] hues = {260, 220, 120, 120, 120, 120, 40, 20, 0};
+
+        for (int i = 0; i < numberOfMessages; i++) {
+            // Select random level with bias towards INFO (4 out of 9 entries are INFO)
+            int levelIndex = random.nextInt(levels.length);
+            String level = levels[levelIndex];
+            int hue = hues[levelIndex];
+
+            // Generate lorem ipsum message (max 100 chars)
+            String message = generateLoremIpsum(random, 100);
+
+            printRandomLogMessage(level, hue, 80, message);
+        }
+    }
+
+    private static String generateLoremIpsum(Random random, int maxLength) {
+        String[] loremWords = {
+            "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit",
+            "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore",
+            "magna", "aliqua", "enim", "ad", "minim", "veniam", "quis", "nostrud",
+            "exercitation", "ullamco", "laboris", "nisi", "aliquip", "ex", "ea", "commodo",
+            "consequat", "duis", "aute", "irure", "in", "reprehenderit", "voluptate",
+            "velit", "esse", "cillum", "fugiat", "nulla", "pariatur", "excepteur", "sint",
+            "occaecat", "cupidatat", "non", "proident", "sunt", "culpa", "qui", "officia",
+            "deserunt", "mollit", "anim", "id", "est", "laborum"
+        };
+
+        StringBuilder message = new StringBuilder();
+        while (message.length() < maxLength - 10) { // Leave some buffer
+            if (message.length() > 0) {
+                message.append(" ");
+            }
+            String word = loremWords[random.nextInt(loremWords.length)];
+            if (message.length() + word.length() + 1 <= maxLength) {
+                message.append(word);
+            } else {
+                break;
+            }
+        }
+
+        return message.toString();
+    }
+
+    private static void printRandomLogMessage(String level, int h, int s, String message) {
+        String timestamp = String.format("2026-02-%02d %02d:%02d:%02d",
+            3 + new Random().nextInt(10),
+            14 + new Random().nextInt(10),
+            new Random().nextInt(60),
+            new Random().nextInt(60));
+
+        String logLine = new FluentLogger(isDark)
+            .append(timestamp, 0, 0)  // Timestamp
+            .spacer(" ")
+            .append(level, h, s)                            // Level
+            .spacer(" ")
+            .append("[", 0, 0)
+            .append("dev.sno.GreetingResource", 220, 80) // Package/Class
+            .append("]", 0, 0)
+            .spacer(" ")
+            .append("(", 0, 0)
+            .append("executor-thread-1", 120, 50)  // Thread
+            .append(")", 0, 0)
+            .spacer(" ")
+            .append(message, 90, 10) // Lorem ipsum message
+            .toString();
+        System.out.println(logLine);
     }
 
     private static void printLogMessage(String level, int h, int s) {
@@ -78,9 +193,9 @@ public class ColorHSL {
             .append("dev.sno.GreetingResource", 220, 80) // Package/Class
             .append("]", 0, 0)
             .spacer(" ")
-            .append("[", 0, 0)
+            .append("(", 0, 0)
             .append("executor-thread-1", 120, 50)  // Thread
-            .append("]", 0, 0)
+            .append(")", 0, 0)
             .spacer(" ")
             .append("This is a log message", 90, 10) // Log message
             .toString();
