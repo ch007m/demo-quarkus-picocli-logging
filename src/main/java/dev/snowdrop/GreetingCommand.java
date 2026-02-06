@@ -1,7 +1,7 @@
 ///usr/bin/env jbang “$0” “$@” ; exit $?
 //DEPS io.quarkus.platform:quarkus-bom:3.29.4@pom
 //DEPS io.quarkus:quarkus-picocli
-//DEPS org.aesh:terminal-tty:3.0-dev
+//DEPS org.aesh:terminal-tty:3.0
 //SOURCES logging
 //SOURCES service
 //Q:CONFIG cli.mode=true

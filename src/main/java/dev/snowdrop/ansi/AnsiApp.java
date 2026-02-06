@@ -1,5 +1,5 @@
 /// usr/bin/env jbang “$0” “$@” ; exit $?
-//DEPS org.aesh:terminal-tty:3.0-dev
+//DEPS org.aesh:terminal-tty:3.0
 
 package dev.snowdrop.ansi;
 
