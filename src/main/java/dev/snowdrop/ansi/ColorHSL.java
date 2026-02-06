@@ -190,7 +190,7 @@ public class ColorHSL {
         String logLine = new FluentLogger(isDark)
             .append(timestamp, 0, 0)  // Timestamp
             .spacer(" ")
-            .append(level, h, s)                            // Level
+            .append(String.format("%-5s",level), h, s)                            // Level
             .spacer(" ")
             .append("[", 0, 0)
             .append("dev.sno.GreetingResource", 220, saturation) // Package/Class
