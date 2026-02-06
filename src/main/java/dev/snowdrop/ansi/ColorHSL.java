@@ -37,7 +37,9 @@ public class ColorHSL {
     private static TerminalColorCapability cap;
     private static Connection connection;
     private static boolean isDark;
+
     private static int lightness = 60;
+    private static int saturation = 50;
 
     public static void main(String[] args) throws IOException {
         try {
@@ -99,12 +101,12 @@ public class ColorHSL {
                 // printWheelColors();
 
                 System.out.println("-".repeat(50));
-                printLogMessage("TRACE",260,80);
-                printLogMessage("DEBUG",220,80);
-                printLogMessage("INFO",120,80);
-                printLogMessage("WARN",40,80);
-                printLogMessage("ERROR",20,80);
-                printLogMessage("FATAL",0,80);
+                printLogMessage("TRACE",260,saturation);
+                printLogMessage("DEBUG",220,saturation);
+                printLogMessage("INFO",120,saturation);
+                printLogMessage("WARN",40,saturation);
+                printLogMessage("ERROR",20,saturation);
+                printLogMessage("FATAL",0,saturation);
             }
 
         } catch (Exception e) {
@@ -126,7 +128,7 @@ public class ColorHSL {
             // Generate lorem ipsum message (max 100 chars)
             String message = generateLoremIpsum(random, 100);
 
-            printRandomLogMessage(level, hue, 80, message);
+            printRandomLogMessage(level, hue, saturation, message);
         }
     }
 
@@ -171,7 +173,7 @@ public class ColorHSL {
             .append(level, h, s)                            // Level
             .spacer(" ")
             .append("[", 0, 0)
-            .append("dev.sno.GreetingResource", 220, 80) // Package/Class
+            .append("dev.sno.GreetingResource", 220, saturation) // Package/Class
             .append("]", 0, 0)
             .spacer(" ")
             .append("(", 0, 0)
@@ -190,7 +192,7 @@ public class ColorHSL {
             .append(level, h, s)                            // Level
             .spacer(" ")
             .append("[", 0, 0)
-            .append("dev.sno.GreetingResource", 220, 80) // Package/Class
+            .append("dev.sno.GreetingResource", 220, saturation) // Package/Class
             .append("]", 0, 0)
             .spacer(" ")
             .append("(", 0, 0)
@@ -210,7 +212,7 @@ public class ColorHSL {
         int activeL = isDark ? darkL : lightL;
 
         // Saturation levels: 50% (Muted) -> 100% (Vivid)
-        int[] saturations = {80};
+        int[] saturations = {saturation};
 
         System.out.println("-".repeat(50));
         System.out.println("HSL Color Wheel Visualization");
