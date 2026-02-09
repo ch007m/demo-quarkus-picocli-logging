@@ -38,7 +38,7 @@ public class ColorHSL {
     private static Connection connection;
     private static boolean isDark;
 
-    private static int lightness = 60;
+    private static int lightness = 70;
     private static int saturation = 50;
 
     public static void main(String[] args) throws IOException {
@@ -193,7 +193,7 @@ public class ColorHSL {
             .append(String.format("%-5s",level), h, s)                            // Level
             .spacer(" ")
             .append("[", 0, 0)
-            .append("dev.sno.GreetingResource", 220, saturation) // Package/Class
+            .append("de.sn.app.GreetingResource", 225, 100) // Package/Class
             .append("]", 0, 0)
             .spacer(" ")
             .append("(", 0, 0)
