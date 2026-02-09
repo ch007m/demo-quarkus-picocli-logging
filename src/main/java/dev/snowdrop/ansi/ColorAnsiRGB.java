@@ -46,9 +46,7 @@ public class ColorAnsiRGB {
         System.out.printf("Detected Theme: %s%n",isDark);
         System.out.println("--------------------------------------------------");
 
-        // 2. Define Lightness logic
-
-        boolean oscSupported = TerminalColorDetector.isOscColorQuerySupported();
+        boolean oscSupported = connection.supportsOscQueries();
         System.out.println("is OSC supported: " + oscSupported);
         System.out.println("Theme : " + connection.getColorCapability().getTheme());
 
