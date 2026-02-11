@@ -26,22 +26,19 @@ public class GreetingCommand implements Runnable {
     @Parameters(paramLabel = "<name>", defaultValue = "picocli", description = "Your name.")
     String name;
 
+    @Inject
+    LoggingService LOG;
+
     @CommandLine.Spec
-    CommandLine.Model.CommandSpec spec;
+    void setSpec(CommandLine.Model.CommandSpec spec) {
+        LOG.setSpec(spec);
+    };
 
     @Inject
     MessageService msgService;
 
-    @Inject
-    LoggingService LOG;
-
     @Override
     public void run() {
-        // Query the terminal to detect if it is DARK, LIGHT, etc
-        LOG.colorDetector();
-
-        // Pass the Picocli Command Spec to the LOG service
-        LOG.setSpec(spec);
 
         // set the Hello message
         msgService.with("picocli");

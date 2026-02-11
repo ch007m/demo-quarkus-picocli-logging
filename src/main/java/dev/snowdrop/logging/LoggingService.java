@@ -1,6 +1,7 @@
 package dev.snowdrop.logging;
 
 import dev.snowdrop.logging.util.LEVEL;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.aesh.terminal.tty.TerminalColorDetector;
 import org.aesh.terminal.tty.TerminalConnection;
@@ -35,6 +36,7 @@ public class LoggingService {
     public LoggingService() {
     }
 
+    @PostConstruct
     public void colorDetector() {
         try {
             TerminalConnection connection = new TerminalConnection();
