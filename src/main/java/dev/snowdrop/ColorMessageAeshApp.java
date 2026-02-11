@@ -19,9 +19,10 @@ import java.util.List;
 
 public class ColorMessageAeshApp {
     private final static String SPACE = " ";
+    private static TerminalColorCapability cap;
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        TerminalColorCapability cap;
+
         try {
             long start = System.nanoTime();
 
@@ -32,11 +33,11 @@ public class ColorMessageAeshApp {
             long elapsed = System.nanoTime() - start;
             double ms = elapsed / 1_000_000.0;
 
-            System.out.printf("Theme: %s%n",cap.getTheme());
+            System.out.printf("Theme: %s%n", cap.getTheme());
             System.out.printf("Theme detection took: [%.2f ms]%n", ms);
 
-            for(LEVEL l : List.of(LEVEL.ERROR,LEVEL.WARN,LEVEL.INFO,LEVEL.DEBUG,LEVEL.TRACE)){
-                System.out.println(printMsg(l, cap, "This is a log message"));
+            for (LEVEL l : List.of(LEVEL.ERROR, LEVEL.WARN, LEVEL.INFO, LEVEL.DEBUG, LEVEL.TRACE)) {
+                System.out.println(printMsg(l, "This is a log message"));
             }
 
         } catch (Exception ex) {
@@ -44,15 +45,17 @@ public class ColorMessageAeshApp {
         }
     }
 
-    private static String printMsg(LEVEL level, TerminalColorCapability cap, String message) {
+    private static String printMsg(LEVEL level, String message) {
+
         String timeStamp = OffsetDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
         int levelColorCode = switch (level) {
-            case ERROR -> cap.getSuggestedErrorCode();
-            case WARN -> cap.getSuggestedWarningCode();
-            case INFO -> cap.getSuggestedInfoCode();
-            case DEBUG -> cap.getSuggestedDebugCode();
             case TRACE -> cap.getSuggestedTraceCode();
+            case DEBUG -> cap.getSuggestedDebugCode();
+            case INFO -> cap.getSuggestedInfoCode();
+            case WARN -> cap.getSuggestedWarningCode();
+            case FATAL, ERROR -> cap.getSuggestedErrorCode();
         };
 
         ANSIBuilder builder = ANSIBuilder.builder()
