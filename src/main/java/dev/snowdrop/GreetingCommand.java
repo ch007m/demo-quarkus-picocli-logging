@@ -37,7 +37,7 @@ public class GreetingCommand implements Runnable {
 
     @Override
     public void run() {
-        // Query the terminal to detect if it is DARK, LIGHt, etc
+        // Query the terminal to detect if it is DARK, LIGHT, etc
         LOG.colorDetector();
 
         // Pass the Picocli Command Spec to the LOG service

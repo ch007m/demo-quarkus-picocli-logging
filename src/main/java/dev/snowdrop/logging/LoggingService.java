@@ -19,9 +19,6 @@ import java.time.format.DateTimeFormatter;
 public class LoggingService {
     private static final Logger logger = Logger.getLogger(LoggingService.class);
 
-    private CommandLine.Model.CommandSpec spec;
-    private TerminalColorCapability cap;
-
     @ConfigProperty(name = "cli.mode", defaultValue = "false")
     boolean isCliMode;
 
@@ -31,6 +28,8 @@ public class LoggingService {
     @ConfigProperty(name = "cli.logging.colored", defaultValue = "true")
     boolean useAnsiColoredMsg;
 
+    private CommandLine.Model.CommandSpec spec;
+    private TerminalColorCapability cap;
     private final static String SPACE = " ";
 
     public LoggingService() {
