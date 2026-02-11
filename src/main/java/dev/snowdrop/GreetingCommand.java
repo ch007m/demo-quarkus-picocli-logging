@@ -2,6 +2,7 @@
 //DEPS io.quarkus.platform:quarkus-bom:3.29.4@pom
 //DEPS io.quarkus:quarkus-picocli
 //DEPS org.aesh:terminal-tty:3.1
+//DEPS org.jboss.logmanager:jboss-logmanager:3.2.1.Final-SNAPSHOT
 //SOURCES logging
 //SOURCES service
 //Q:CONFIG cli.mode=true
@@ -36,8 +37,8 @@ public class GreetingCommand implements Runnable {
 
     @Override
     public void run() {
-        // Init Aesh
-        LOG.setupAesh();
+        // Query the terminal to detect if it is DARK, LIGHt, etc
+        LOG.colorDetector();
 
         // Pass the Picocli Command Spec to the LOG service
         LOG.setSpec(spec);
@@ -46,10 +47,12 @@ public class GreetingCommand implements Runnable {
         msgService.with("picocli");
 
         // Messages to log
+        LOG.trace("This is a logging TRACE message.");
+        LOG.debug("This is a logging DEBUG message.");
         LOG.info(String.format("Hello %s, go go commando!", name));
         LOG.warn("This is a logging WARN message.");
-        LOG.debug("This is a logging DEBUG message.");
-        LOG.trace("This is a logging TRACE message.");
+        LOG.error("This is a logging ERROR message.");
+        LOG.fatal("This is a logging FATAL message.");
 
         try {
             // Emulate a business logic failure

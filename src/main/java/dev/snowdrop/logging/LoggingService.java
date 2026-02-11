@@ -1,13 +1,14 @@
 package dev.snowdrop.logging;
 
 import dev.snowdrop.logging.util.LEVEL;
-import dev.snowdrop.service.MessageService;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.aesh.terminal.tty.TerminalColorDetector;
 import org.aesh.terminal.tty.TerminalConnection;
 import org.aesh.terminal.utils.*;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
+import org.jboss.logmanager.ExtLogRecord;
+import org.jboss.logmanager.formatters.ColorPatternFormatter;
 import picocli.CommandLine;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 
 @ApplicationScoped
 public class LoggingService {
-    private static final Logger logger = Logger.getLogger(MessageService.class);
+    private static final Logger logger = Logger.getLogger(LoggingService.class);
 
     private CommandLine.Model.CommandSpec spec;
     private TerminalColorCapability cap;
@@ -30,29 +31,16 @@ public class LoggingService {
     @ConfigProperty(name = "cli.logging.colored", defaultValue = "true")
     boolean useAnsiColoredMsg;
 
-    private final static String TIMESTAMP_COLOR = "TIMESTAMP";
-    private final static String MESSAGE_COLOR = "MESSAGE";
     private final static String SPACE = " ";
-
-    private static boolean isDark;
-
-    // CommandLine.Help.ColorScheme colorScheme;
 
     public LoggingService() {
     }
 
-    public void setupAesh() {
+    public void colorDetector() {
         try {
             TerminalConnection connection = new TerminalConnection();
-            // Using the default color code and check if the theme is dark or light
+            connection.openNonBlocking();
             cap = TerminalColorDetector.detect(connection);
-
-            //TerminalTheme theme = connection.getColorCapability().getTheme();
-            //isDark = (theme == TerminalTheme.DARK);
-
-            //printCapability(connection,"   ",cap);
-            //demonstrateColors(connection,cap);
-
             connection.close();
         } catch (IOException e) {
             System.err.println("Error creating terminal connection: " + e.getMessage());
@@ -61,10 +49,8 @@ public class LoggingService {
     }
 
     public void info(String message) {
-        // TODO: To be investigate to see if this is easier to use picocli Ansi and the colorScheme = spec.commandLine().getColorScheme();
         if (isCliMode) {
-            //spec.commandLine().getOut().println(colorScheme.ansi().new Text("#" + message,colorScheme));
-            var formatedMessage = newFormatedMessage(LEVEL.INFO, cap, message);
+            var formatedMessage = colorizeMessage(LEVEL.INFO, message);
             spec.commandLine().getOut().println(formatedMessage);
         } else {
             logger.info(message);
@@ -73,7 +59,7 @@ public class LoggingService {
 
     public void warn(String message) {
         if (isCliMode) {
-            spec.commandLine().getOut().println(newFormatedMessage(LEVEL.WARN, cap, message));
+            spec.commandLine().getOut().println(colorizeMessage(LEVEL.WARN, message));
         } else {
             logger.warn(message);
         }
@@ -81,7 +67,7 @@ public class LoggingService {
 
     public void debug(String message) {
         if (isCliMode) {
-            spec.commandLine().getOut().println(newFormatedMessage(LEVEL.DEBUG, cap, message));
+            spec.commandLine().getOut().println(colorizeMessage(LEVEL.DEBUG, message));
         } else {
             logger.debug(message);
         }
@@ -89,9 +75,17 @@ public class LoggingService {
 
     public void trace(String message) {
         if (isCliMode) {
-            spec.commandLine().getOut().println(newFormatedMessage(LEVEL.TRACE, cap, message));
+            spec.commandLine().getOut().println(colorizeMessage(LEVEL.TRACE, message));
         } else {
             logger.trace(message);
+        }
+    }
+
+    public void fatal(String message) {
+        if (isCliMode) {
+            spec.commandLine().getOut().println(colorizeMessage(LEVEL.FATAL, message));
+        } else {
+            logger.fatal(message);
         }
     }
 
@@ -101,13 +95,13 @@ public class LoggingService {
 
     public void error(String message, Throwable e) {
         if (isCliMode) {
-            spec.commandLine().getOut().println(newFormatedMessage(LEVEL.ERROR, cap, message));
+            spec.commandLine().getOut().println(colorizeMessage(LEVEL.ERROR, message));
             if (e != null && isVerbose) {
                 //e.printStackTrace(spec.commandLine().getErr());
                 java.io.StringWriter sw = new java.io.StringWriter();
                 e.printStackTrace(new java.io.PrintWriter(sw));
                 String stackTrace = sw.toString();
-                spec.commandLine().getErr().println(newFormatedMessage(LEVEL.ERROR, cap, stackTrace, true));
+                spec.commandLine().getErr().println(colorizeMessage(LEVEL.ERROR, stackTrace, true));
             }
         } else {
             if (isVerbose && e != null) {
@@ -122,16 +116,31 @@ public class LoggingService {
         this.spec = spec;
     }
 
-    public String newFormatedMessage(LEVEL level, TerminalColorCapability cap, String message) {
-        return newFormatedMessage(level, cap, message, false);
+    public String colorizeMessage(LEVEL level, String message) {
+        return colorizeMessage(level, message, false);
     }
 
-    public String newFormatedMessage(LEVEL level, TerminalColorCapability cap, String message, boolean isStackTrace) {
+    public String colorizeMessage(LEVEL level, String message, boolean isStackTrace) {
+        int darken;
+        if (cap.getTheme().isDark()) {
+            darken = 0;
+        } else {
+            darken = 1;
+        }
+        ColorPatternFormatter fmt = new ColorPatternFormatter(darken, "%d{HH:mm:ss,SSS} %-5p %s%E");
+        ExtLogRecord record = new ExtLogRecord(
+                level.toJbossLevel(), message, ExtLogRecord.FormatStyle.PRINTF,
+                LoggingService.class.getName());
+        return fmt.format(record);
+    }
+
+    public String colorizeMessageWithAesh(LEVEL level, TerminalColorCapability cap, String message, boolean isStackTrace) {
         String timeStamp = OffsetDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         if (useAnsiColoredMsg) {
             int levelColorCode = switch (level) {
                 case ERROR -> cap.getSuggestedErrorCode();
+                case FATAL -> cap.getSuggestedErrorCode();
                 case WARN -> cap.getSuggestedWarningCode();
                 case INFO -> cap.getSuggestedInfoCode();
                 case DEBUG -> cap.getSuggestedDebugCode();

@@ -1,19 +1,28 @@
 package dev.snowdrop.logging.util;
 
+import org.jboss.logmanager.Level;
+
 public enum LEVEL {
-    INFO("GREEN"),
-    WARN("YELLOW"),
-    ERROR("RED"),
-    DEBUG("CYAN"),
-    TRACE("CYAN");
+    TRACE("CYAN", org.jboss.logmanager.Level.TRACE),
+    DEBUG("CYAN", org.jboss.logmanager.Level.DEBUG),
+    INFO("GREEN", org.jboss.logmanager.Level.INFO),
+    WARN("YELLOW", org.jboss.logmanager.Level.WARN),
+    ERROR("RED", org.jboss.logmanager.Level.ERROR),
+    FATAL("RED", org.jboss.logmanager.Level.FATAL);
 
     private final String color;
+    private final org.jboss.logmanager.Level jbossLevel;
 
-    LEVEL(String color) {
+    LEVEL(String color, org.jboss.logmanager.Level jbossLevel) {
         this.color = color;
+        this.jbossLevel = jbossLevel;
     }
 
     public String getColor() {
         return color;
+    }
+
+    public org.jboss.logmanager.Level toJbossLevel() {
+        return jbossLevel;
     }
 }
