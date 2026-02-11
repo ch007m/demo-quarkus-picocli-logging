@@ -51,8 +51,6 @@ public class GreetingCommand implements Runnable {
         LOG.debug("This is a logging DEBUG message.");
         LOG.info(String.format("Hello %s, go go commando!", name));
         LOG.warn("This is a logging WARN message.");
-        LOG.error("This is a logging ERROR message.");
-        LOG.fatal("This is a logging FATAL message.");
 
         try {
             // Emulate a business logic failure
@@ -60,6 +58,8 @@ public class GreetingCommand implements Runnable {
         } catch (Exception e) {
             LOG.error(String.format("Failed to execute command: %s",e.getMessage()),e);
         }
+
+        LOG.fatal("This is a logging FATAL message.");
     }
 
 }
