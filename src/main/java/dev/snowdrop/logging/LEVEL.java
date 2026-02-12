@@ -1,6 +1,4 @@
-package dev.snowdrop.logging.util;
-
-import org.jboss.logmanager.Level;
+package dev.snowdrop.logging;
 
 public enum LEVEL {
     TRACE("CYAN", org.jboss.logmanager.Level.TRACE),
@@ -16,10 +14,6 @@ public enum LEVEL {
     LEVEL(String color, org.jboss.logmanager.Level jbossLevel) {
         this.color = color;
         this.jbossLevel = jbossLevel;
-    }
-
-    public String getColor() {
-        return color;
     }
 
     public org.jboss.logmanager.Level toJbossLevel() {

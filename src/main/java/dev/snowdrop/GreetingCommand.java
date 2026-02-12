@@ -2,17 +2,17 @@
 //DEPS io.quarkus.platform:quarkus-bom:3.29.4@pom
 //DEPS io.quarkus:quarkus-picocli
 //DEPS org.aesh:terminal-tty:3.1
-//DEPS org.jboss.logmanager:jboss-logmanager:3.2.1.Final-SNAPSHOT
+//DEPS org.jboss.logmanager:jboss-logmanager:3.2.1.Final
 //SOURCES logging
 //SOURCES service
-//Q:CONFIG cli.mode=true
-//Q:CONFIG cli.logging.colored=true
-//Q:CONFIG cli.logging.verbose=false
+//Q:CONFIG client.mode=true
+//Q:CONFIG client.logging.verbose=false
 //Q:CONFIG quarkus.banner.enabled=false
 //Q:CONFIG quarkus.log.level=WARN
 
 package dev.snowdrop;
 
+import dev.snowdrop.logging.LogFactory;
 import dev.snowdrop.logging.LoggingService;
 import dev.snowdrop.service.MessageService;
 import jakarta.inject.Inject;
@@ -23,16 +23,19 @@ import picocli.CommandLine.Parameters;
 @Command(name = "greeting", mixinStandardHelpOptions = true)
 public class GreetingCommand implements Runnable {
 
-    @Parameters(paramLabel = "<name>", defaultValue = "picocli", description = "Your name.")
-    String name;
-
     @Inject
-    LoggingService LOG;
+    LogFactory logFactory;
+
+    private LoggingService LOG;
 
     @CommandLine.Spec
     void setSpec(CommandLine.Model.CommandSpec spec) {
-        LOG.setSpec(spec);
+        logFactory.setSpec(spec);
+        this.LOG = logFactory.getLogger();
     };
+
+    @Parameters(paramLabel = "<name>", defaultValue = "picocli", description = "Your name.")
+    String name;
 
     @Inject
     MessageService msgService;

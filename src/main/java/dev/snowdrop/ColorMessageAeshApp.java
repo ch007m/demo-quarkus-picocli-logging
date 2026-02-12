@@ -1,5 +1,5 @@
 /// usr/bin/env jbang “$0” “$@” ; exit $?
-//DEPS org.jboss.logmanager:jboss-logmanager:3.2.1.Final-SNAPSHOT
+//DEPS org.jboss.logmanager:jboss-logmanager:3.2.1.Final
 //DEPS org.aesh:terminal-tty:3.1
 //SOURCES logging/util
 //RUNTIME_OPTIONS -Djava.util.logging.manager=org.jboss.logmanager.LogManager
