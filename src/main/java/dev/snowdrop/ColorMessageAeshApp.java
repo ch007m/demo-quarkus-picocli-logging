@@ -1,12 +1,10 @@
 /// usr/bin/env jbang “$0” “$@” ; exit $?
 //DEPS org.jboss.logmanager:jboss-logmanager:3.2.1.Final
 //DEPS org.aesh:terminal-tty:3.1
-//SOURCES logging/util
 //RUNTIME_OPTIONS -Djava.util.logging.manager=org.jboss.logmanager.LogManager
 
 package dev.snowdrop;
 
-import dev.snowdrop.logging.util.LEVEL;
 import org.aesh.terminal.tty.TerminalColorDetector;
 import org.aesh.terminal.tty.TerminalConnection;
 import org.aesh.terminal.utils.ANSIBuilder;
@@ -24,17 +22,15 @@ public class ColorMessageAeshApp {
     public static void main(String[] args) throws IOException, InterruptedException {
 
         try {
-            long start = System.nanoTime();
+            long start = System.currentTimeMillis();
 
             TerminalConnection connection = new TerminalConnection();
-            connection.openNonBlocking();
             cap = TerminalColorDetector.detect(connection);
 
-            long elapsed = System.nanoTime() - start;
-            double ms = elapsed / 1_000_000.0;
+            long elapsed = System.currentTimeMillis() - start;
 
             System.out.printf("Theme: %s%n", cap.getTheme());
-            System.out.printf("Theme detection took: [%.2f ms]%n", ms);
+            System.out.printf("Theme detection took: [%s ms]%n", elapsed);
 
             for (LEVEL l : List.of(LEVEL.ERROR, LEVEL.WARN, LEVEL.INFO, LEVEL.DEBUG, LEVEL.TRACE)) {
                 System.out.println(printMsg(l, "This is a log message"));
@@ -68,5 +64,26 @@ public class ColorMessageAeshApp {
                 .message(message);
 
         return builder.toString();
+    }
+
+    public static enum LEVEL {
+        TRACE("CYAN", org.jboss.logmanager.Level.TRACE),
+        DEBUG("CYAN", org.jboss.logmanager.Level.DEBUG),
+        INFO("GREEN", org.jboss.logmanager.Level.INFO),
+        WARN("YELLOW", org.jboss.logmanager.Level.WARN),
+        ERROR("RED", org.jboss.logmanager.Level.ERROR),
+        FATAL("RED", org.jboss.logmanager.Level.FATAL);
+
+        private final String color;
+        private final org.jboss.logmanager.Level jbossLevel;
+
+        LEVEL(String color, org.jboss.logmanager.Level jbossLevel) {
+            this.color = color;
+            this.jbossLevel = jbossLevel;
+        }
+
+        public org.jboss.logmanager.Level toJbossLevel() {
+            return jbossLevel;
+        }
     }
 }
