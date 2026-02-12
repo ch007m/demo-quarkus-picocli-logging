@@ -25,7 +25,7 @@ public class ColorMessageAeshApp {
             long start = System.currentTimeMillis();
 
             TerminalConnection connection = new TerminalConnection();
-            cap = TerminalColorDetector.detect(connection);
+            cap = TerminalColorDetector.queryThemeColors(connection,200);
 
             long elapsed = System.currentTimeMillis() - start;
 
