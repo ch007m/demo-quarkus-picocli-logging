@@ -154,6 +154,21 @@
                 <version>${maven-exec.version}</version>
                 <executions>
                     <execution>
+                        <id>colorWithLogManager</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>dev.snowdrop.ColorMsgLogManagerApp</mainClass>
+                            <systemProperties>
+                                <systemProperty>
+                                    <key>java.util.logging.manager</key>
+                                    <value>org.jboss.logmanager.LogManager</value>
+                                </systemProperty>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>picocli-logmanager</id>
                         <goals>
                             <goal>java</goal>
@@ -183,7 +198,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>dev.snowdrop.ColorMessageAeshApp</mainClass>
+                            <mainClass>dev.snowdrop.ColorMsgAeshApp</mainClass>
                             <systemProperties>
                                 <systemProperty>
                                     <key>java.util.logging.manager</key>

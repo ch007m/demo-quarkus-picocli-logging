@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class ColorMessageAeshApp {
+public class ColorMsgAeshApp {
     private final static String SPACE = " ";
     private static TerminalColorCapability cap;
     private static ANSIBuilder builder;
