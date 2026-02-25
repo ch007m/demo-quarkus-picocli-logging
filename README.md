@@ -199,6 +199,8 @@ Using Quarkus Picocli, Aesh and JBoss LogManager to colorize and format the mess
 ```bash
 alias colorWithQuarkusPicocli='java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -jar ./target/quarkus-picocli-1.0.0-SNAPSHOT-runner.jar'
 colorWithQuarkusPicocli -n quarkus
-colorWithQuarkusPicocli -n quarkus -c 
+colorWithQuarkusPicocli -n quarkus -c
+
+java -Dcli.log.msg.format="greeting-app: %s%e%n" -Djava.util.logging.manager=org.jboss.logmanager.LogManager -jar ./target/quarkus-picocli-1.0.0-SNAPSHOT-runner.jar -c 
 ```
 

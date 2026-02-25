@@ -12,7 +12,6 @@ import java.io.PrintWriter;
  */
 public class ColorHandler extends ExtHandler {
     private final CommandLine.Model.CommandSpec spec;
-    private final ColorPatternFormatter formatter;
 
     /**
      * Creates a new handler with the given command spec and darken level.
@@ -22,7 +21,6 @@ public class ColorHandler extends ExtHandler {
      */
     public ColorHandler(CommandLine.Model.CommandSpec spec, int darken) {
         this.spec = spec;
-        this.formatter = new ColorPatternFormatter(darken, "%d{HH:mm:ss} %-5p [%c{2.}] (%t) %s%e%n");
     }
 
     @Override
@@ -32,7 +30,7 @@ public class ColorHandler extends ExtHandler {
                 ? spec.commandLine().getErr()
                 : spec.commandLine().getOut();
 
-        writer.print(formatter.format(record));
+        writer.print(super.getFormatter().format(record));
         writer.flush();
     }
 }

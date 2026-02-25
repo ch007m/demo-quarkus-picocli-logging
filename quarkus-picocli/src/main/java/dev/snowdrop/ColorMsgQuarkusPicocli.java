@@ -8,9 +8,11 @@ package dev.snowdrop;
 
 import org.aesh.terminal.tty.TerminalColorDetector;
 import org.aesh.terminal.tty.TerminalConnection;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 import org.jboss.logmanager.Level;
 import org.jboss.logmanager.LogManager;
+import org.jboss.logmanager.formatters.ColorPatternFormatter;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
@@ -27,6 +29,9 @@ import java.io.IOException;
 public class ColorMsgQuarkusPicocli implements Runnable {
     static LogManager logManager = (LogManager) LogManager.getLogManager();
     static Logger logger = Logger.getLogger(ColorMsgQuarkusPicocli.class.getName());
+
+    @ConfigProperty(name = "cli.log.msg.format")
+    String logMsgFormat;
 
     @Spec
     CommandSpec spec;
@@ -68,6 +73,7 @@ public class ColorMsgQuarkusPicocli implements Runnable {
     private void setupPicocliHandler(int darken) {
         ColorHandler handler = new ColorHandler(spec, darken);
         handler.setLevel(Level.TRACE);
+        handler.setFormatter(new ColorPatternFormatter(darken, logMsgFormat));
 
         logManager.getLogger(ColorMsgQuarkusPicocli.class.getName()).addHandler(handler);
         logManager.getLogger(ColorMsgQuarkusPicocli.class.getName()).setLevel(Level.ALL);
