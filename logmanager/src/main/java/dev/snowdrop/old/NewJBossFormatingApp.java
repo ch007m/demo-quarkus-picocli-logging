@@ -3,7 +3,7 @@
 //DEPS org.aesh:terminal-tty:3.1
 //RUNTIME_OPTIONS -Djava.util.logging.manager=org.jboss.logmanager.LogManager
 
-package dev.snowdrop;
+package dev.snowdrop.old;
 
 import org.aesh.terminal.tty.TerminalColorDetector;
 import org.aesh.terminal.tty.TerminalConnection;

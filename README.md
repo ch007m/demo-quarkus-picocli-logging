@@ -164,8 +164,21 @@ As picocli applications will often require arguments to be passed on the command
 
 ## TODO
 
-New commands created to test
+### Aesh
+
+Using Aesh and LogManager to colorize the messages to be logged
 
 ```bash
-alias colorWithAesh='java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -cp "./target/quarkus-app/lib/boot:./target/quarkus-app/lib/main:./target/classes" dev.snowdrop.ColorMsgAeshApp'
+set AESH_GAV "$HOME/.m2/repository/dev/snowdrop/aesh/1.0.0-SNAPSHOT/aesh-1.0.0-SNAPSHOT-jar-with-dependencies.jar"
+alias colorWithAesh='java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -cp $AESH_GAV dev.snowdrop.ColorMsgAeshApp'
+colorWithAesh
+```
+
+### LogManager
+
+Using the JBoss LogManager and a ColorHandler for colorize and format the messages
+```bash
+set LOGMANAGER_GAV "$HOME/.m2/repository/dev/snowdrop/logmanager/1.0.0-SNAPSHOT/logmanager-1.0.0-SNAPSHOT-jar-with-dependencies.jar"
+alias colorWithLogManager='java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -cp $LOGMANAGER_GAV dev.snowdrop.ColorMsgLogManagerApp'
+colorWithLogManager
 ```

@@ -25,6 +25,7 @@
 
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-exec.version>3.6.3</maven-exec.version>
+        <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <surefire-plugin.version>3.5.4</surefire-plugin.version>
     </properties>
 
@@ -70,6 +71,15 @@
     </repositories>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven-assembly-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>${quarkus.platform.group-id}</groupId>

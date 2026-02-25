@@ -10,7 +10,6 @@ import org.aesh.terminal.tty.TerminalConnection;
 import org.aesh.terminal.utils.ANSIBuilder;
 import org.aesh.terminal.utils.TerminalColorCapability;
 
-import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -19,7 +18,7 @@ public class ColorMsgAeshApp {
     private static TerminalColorCapability cap;
     private static ANSIBuilder builder;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) {
 
         try {
             long start = System.currentTimeMillis();

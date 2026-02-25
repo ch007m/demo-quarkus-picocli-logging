@@ -12,6 +12,8 @@ import java.io.PrintWriter;
 public class ColorHandler extends ExtHandler {
 
     private final ColorPatternFormatter formatter;
+    private PrintWriter out;
+    private PrintWriter err;
 
     /**
      * Creates a new handler with the given command spec and darken level.
@@ -20,14 +22,17 @@ public class ColorHandler extends ExtHandler {
      */
     public ColorHandler(int darken) {
         this.formatter = new ColorPatternFormatter(darken, "%d{HH:mm:ss} %-5p [%c{2.}] (%t) %s%e%n");
+        out = new PrintWriter(System.out);
+        err = new PrintWriter(System.err);
     }
 
     @Override
     protected void doPublish(ExtLogRecord record) {
-        PrintWriter out = new PrintWriter(System.out);
-        PrintWriter err = new PrintWriter(System.err);
-        PrintWriter writer = (record.getLevel().intValue() >= org.jboss.logmanager.Level.ERROR.intValue())
-                ? err : out;
+
+        int recordLevel = record.getLevel().intValue();
+        int loggerLevel = org.jboss.logmanager.Level.ERROR.intValue();
+
+        PrintWriter writer = recordLevel >= loggerLevel ? err : out;
 
         writer.print(formatter.format(record));
         writer.flush();

@@ -1,7 +1,7 @@
 /// usr/bin/env jbang “$0” “$@” ; exit $?
 //DEPS org.aesh:terminal-tty:3.0
 
-package dev.snowdrop;
+package dev.snowdrop.old;
 
 import java.util.Arrays;
 import java.util.List;
