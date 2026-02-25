@@ -182,3 +182,23 @@ set LOGMANAGER_GAV "$HOME/.m2/repository/dev/snowdrop/logmanager/1.0.0-SNAPSHOT/
 alias colorWithLogManager='java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -cp $LOGMANAGER_GAV dev.snowdrop.ColorMsgLogManagerApp'
 colorWithLogManager
 ```
+
+### Picocli
+
+Using the Picocli, Aesh and JBoss LogManager to colorize and format the messages
+```bash
+set PICOCLI_GAV "$HOME/.m2/repository/dev/snowdrop/picocli/1.0.0-SNAPSHOT/picocli-1.0.0-SNAPSHOT-jar-with-dependencies.jar"
+alias colorWithPicocli='java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -cp $PICOCLI_GAV dev.snowdrop.ColorWithQuarkusPicocli'
+colorWithPicocli --name snowdrop
+colorWithPicocli --name snowdrop --color
+```
+
+### Quarkus & Picocli
+
+Using Quarkus Picocli, Aesh and JBoss LogManager to colorize and format the messages
+```bash
+alias colorWithQuarkusPicocli='java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -jar ./target/quarkus-picocli-1.0.0-SNAPSHOT-runner.jar'
+colorWithQuarkusPicocli -n quarkus
+colorWithQuarkusPicocli -n quarkus -c 
+```
+

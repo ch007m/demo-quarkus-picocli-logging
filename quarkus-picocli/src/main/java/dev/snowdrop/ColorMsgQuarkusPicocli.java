@@ -15,36 +15,41 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Spec;
+import jakarta.enterprise.context.Dependent;
 
 import java.io.IOException;
 
-@Command(name = "hello",
+@Command(name = "greeting",
         mixinStandardHelpOptions = true,
         version = "1.0",
-        description = "Picocli with JBoss LogManager")
-public class ColorMsgPicocliApp implements Runnable {
+        description = "Quarkus Picocli and JBoss LogManager")
+public class ColorMsgQuarkusPicocli implements Runnable {
     static LogManager logManager = (LogManager) LogManager.getLogManager();
-    static Logger logger = Logger.getLogger(ColorMsgPicocliApp.class.getName());
+    static Logger logger = Logger.getLogger(ColorMsgQuarkusPicocli.class.getName());
 
     @Spec
     CommandSpec spec;
 
-    @Option(names = {"-c","--color"}, negatable = true, defaultValue = "false",
+    @Option(names = {"-c", "--color"}, negatable = true, defaultValue = "false",
             description = "Enable or disable colored output (default: ${DEFAULT-VALUE})")
     boolean color;
 
     @CommandLine.Option(names = {"-n", "--name"}, description = "Who will we greet?", defaultValue = "World")
     String name;
 
+    private final GreetingService greetingService;
+
+    public ColorMsgQuarkusPicocli(GreetingService greetingService) {
+        this.greetingService = greetingService;
+    }
+
     @Override
     public void run() {
-
         if (color) {
             setupPicocliHandler(isTerminalDark());
         } else {
-            org.jboss.logmanager.Logger rootLogger = logManager.getLogger(ColorMsgPicocliApp.class.getName());
+            org.jboss.logmanager.Logger rootLogger = logManager.getLogger(ColorMsgQuarkusPicocli.class.getName());
             rootLogger.setLevel(Level.ALL);
             rootLogger.setUseParentHandlers(true);
         }
@@ -56,14 +61,16 @@ public class ColorMsgPicocliApp implements Runnable {
         logger.warn("Hello " + name + "! This is a WARNING message.");
         logger.error("Hello " + name + "! This is an ERROR message.");
         logger.fatal("Hello " + name + "! This is a FATAL message.");
+
+        greetingService.sayHello(name);
     }
 
     private void setupPicocliHandler(int darken) {
         ColorHandler handler = new ColorHandler(spec, darken);
         handler.setLevel(Level.TRACE);
 
-        logManager.getLogger(ColorMsgPicocliApp.class.getName()).addHandler(handler);
-        logManager.getLogger(ColorMsgPicocliApp.class.getName()).setLevel(Level.ALL);
+        logManager.getLogger(ColorMsgQuarkusPicocli.class.getName()).addHandler(handler);
+        logManager.getLogger(ColorMsgQuarkusPicocli.class.getName()).setLevel(Level.ALL);
     }
 
     private static int isTerminalDark() {
@@ -78,9 +85,11 @@ public class ColorMsgPicocliApp implements Runnable {
         }
         return darken;
     }
+}
 
-    public static void main(String[] args) {
-        int exitCode = new CommandLine(new ColorMsgPicocliApp()).execute(args);
-        System.exit(exitCode);
+@Dependent
+class GreetingService {
+    void sayHello(String name) {
+        System.out.println("Hello " + name + "!");
     }
 }

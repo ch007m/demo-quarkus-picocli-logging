@@ -34,6 +34,7 @@
         <module>aesh</module>
         <module>logmanager</module>
         <module>picocli</module>
+        <module>quarkus-picocli</module>
     </modules>
 
     <dependencyManagement>
@@ -168,10 +169,10 @@
                                 <argument>-Djava.util.logging.manager=org.jboss.logmanager.LogManager</argument>
                                 <argument>-classpath</argument>
                                 <classpath/>
-                                <argument>dev.snowdrop.ColorMsgPicocliApp</argument>
+                                <argument>dev.snowdrop.ColorWithQuarkusPicocli</argument>
                             </arguments>
                             -->
-                            <mainClass>dev.snowdrop.ColorMsgPicocliApp</mainClass>
+                            <mainClass>dev.snowdrop.ColorWithQuarkusPicocli</mainClass>
                             <systemProperties>
                                 <systemProperty>
                                     <key>java.util.logging.manager</key>
