@@ -15,7 +15,6 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Spec;
 
 import java.io.IOException;
@@ -42,7 +41,7 @@ public class ColorMsgPicocliApp implements Runnable {
     public void run() {
 
         if (color) {
-            setupPicocliHandler(isTerminalDark());
+            setupLogManagerAndHandler(isTerminalDark());
         } else {
             org.jboss.logmanager.Logger rootLogger = logManager.getLogger(ColorMsgPicocliApp.class.getName());
             rootLogger.setLevel(Level.ALL);
@@ -58,12 +57,14 @@ public class ColorMsgPicocliApp implements Runnable {
         logger.fatal("Hello " + name + "! This is a FATAL message.");
     }
 
-    private void setupPicocliHandler(int darken) {
-        ColorHandler handler = new ColorHandler(spec, darken);
-        handler.setLevel(Level.TRACE);
+    private void setupLogManagerAndHandler(int darken) {
+        String logName = ColorMsgPicocliApp.class.getName();
 
-        logManager.getLogger(ColorMsgPicocliApp.class.getName()).addHandler(handler);
-        logManager.getLogger(ColorMsgPicocliApp.class.getName()).setLevel(Level.ALL);
+        ColorHandler handler = new ColorHandler(spec, isTerminalDark());
+        handler.setLevel(Level.TRACE);
+        logManager.getLogger(logName).setUseParentHandlers(false); // This is needed to avoid to log twice the messages
+        logManager.getLogger(logName).addHandler(handler);
+        logManager.getLogger(logName).setLevel(Level.ALL);
     }
 
     private static int isTerminalDark() {
