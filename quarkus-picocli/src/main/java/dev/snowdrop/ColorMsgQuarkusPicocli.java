@@ -52,7 +52,9 @@ public class ColorMsgQuarkusPicocli implements Runnable {
     @Override
     public void run() {
         if (color) {
-            setupPicocliHandler(isTerminalDark());
+            var darken = isTerminalDark();
+            setupLogManagerAndHandler(darken);
+            logger.infof("Theme of the terminal is: %s", darken == 0 ? "Dark" :"Light");
         } else {
             org.jboss.logmanager.Logger rootLogger = logManager.getLogger(ColorMsgQuarkusPicocli.class.getName());
             rootLogger.setLevel(Level.ALL);
@@ -70,7 +72,7 @@ public class ColorMsgQuarkusPicocli implements Runnable {
         greetingService.sayHello(name);
     }
 
-    private void setupPicocliHandler(int darken) {
+    private void setupLogManagerAndHandler(int darken) {
         ColorHandler handler = new ColorHandler(spec, darken);
         handler.setLevel(Level.TRACE);
         handler.setFormatter(new ColorPatternFormatter(darken, logMsgFormat));
@@ -82,8 +84,11 @@ public class ColorMsgQuarkusPicocli implements Runnable {
     private static int isTerminalDark() {
         int darken = 0;
         try {
-            TerminalConnection tty = new TerminalConnection();
-            var cap = TerminalColorDetector.detect(tty);
+            long start = System.currentTimeMillis();
+            TerminalConnection connection = new TerminalConnection();
+            var cap = TerminalColorDetector.detect(connection);
+            long elapsed = System.currentTimeMillis() - start;
+            System.out.printf("Theme detection took: [%s ms]%n", elapsed);
 
             darken = cap.getTheme().isDark() ? 0 : 1;
         } catch (IOException ex) {

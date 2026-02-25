@@ -41,7 +41,9 @@ public class ColorMsgPicocliApp implements Runnable {
     public void run() {
 
         if (color) {
-            setupLogManagerAndHandler(isTerminalDark());
+            var darken = isTerminalDark();
+            setupLogManagerAndHandler(darken);
+            logger.infof("Theme of the terminal is: %s", darken == 0 ? "Dark" :"Light");
         } else {
             org.jboss.logmanager.Logger rootLogger = logManager.getLogger(ColorMsgPicocliApp.class.getName());
             rootLogger.setLevel(Level.ALL);
@@ -60,7 +62,7 @@ public class ColorMsgPicocliApp implements Runnable {
     private void setupLogManagerAndHandler(int darken) {
         String logName = ColorMsgPicocliApp.class.getName();
 
-        ColorHandler handler = new ColorHandler(spec, isTerminalDark());
+        ColorHandler handler = new ColorHandler(spec, darken);
         handler.setLevel(Level.TRACE);
         logManager.getLogger(logName).setUseParentHandlers(false); // This is needed to avoid to log twice the messages
         logManager.getLogger(logName).addHandler(handler);
@@ -70,8 +72,11 @@ public class ColorMsgPicocliApp implements Runnable {
     private static int isTerminalDark() {
         int darken = 0;
         try {
-            TerminalConnection tty = new TerminalConnection();
-            var cap = TerminalColorDetector.detect(tty);
+            long start = System.currentTimeMillis();
+            TerminalConnection connection = new TerminalConnection();
+            var cap = TerminalColorDetector.detect(connection);
+            long elapsed = System.currentTimeMillis() - start;
+            System.out.printf("Theme detection took: [%s ms]%n", elapsed);
 
             darken = cap.getTheme().isDark() ? 0 : 1;
         } catch (IOException ex) {
