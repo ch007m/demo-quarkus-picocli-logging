@@ -161,3 +161,11 @@ As picocli applications will often require arguments to be passed on the command
 ```shell script
 ./mvnw quarkus:dev -Dquarkus.args='Quarky'
 ```
+
+## TODO
+
+New commands created to test
+
+```bash
+alias colorWithAesh='java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -cp "./target/quarkus-app/lib/boot:./target/quarkus-app/lib/main:./target/classes" dev.snowdrop.ColorMsgAeshApp'
+```
