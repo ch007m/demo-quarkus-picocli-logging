@@ -29,8 +29,8 @@ public class ColorMsgLogManagerApp {
         ColorHandler handler = new ColorHandler(isTerminalDark());
         handler.setLevel(Level.TRACE);
 
-        logManager.getLogger(HelloCommand.class.getName()).addHandler(handler);
-        logManager.getLogger(HelloCommand.class.getName()).setLevel(Level.ALL);
+        logManager.getLogger(ColorMsgLogManagerApp.class.getName()).addHandler(handler);
+        logManager.getLogger(ColorMsgLogManagerApp.class.getName()).setLevel(Level.ALL);
     }
 
     private static int isTerminalDark() {
