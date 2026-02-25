@@ -16,6 +16,8 @@ public class ColorMsgLogManagerApp {
     public static void main(String[] args) throws IOException {
         setupLogManagerAndHandler();
 
+        logger.infof("Theme of the terminal is: %s", isTerminalDark() == 0 ? "Dark" :"Light");
+
         logger.trace("This is a TRACE message.");
         logger.debug("This is a DEBUG message.");
         logger.info("This is a INFO message.");

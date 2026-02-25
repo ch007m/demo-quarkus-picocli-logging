@@ -35,6 +35,7 @@
         <module>logmanager</module>
         <module>picocli</module>
         <module>quarkus-picocli</module>
+        <module>jbang</module>
     </modules>
 
     <dependencyManagement>
