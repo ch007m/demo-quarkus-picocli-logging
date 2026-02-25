@@ -51,10 +51,6 @@ public class ColorAnsiRGB {
         System.out.println("Theme : " + connection.getColorCapability().getTheme());
 
         if (oscSupported) {
-            // Background detection
-            var bkColor = TerminalColorDetector.queryBackgroundColor(connection, 100);
-            System.out.println("Background color : " + Arrays.toString(bkColor));
-
             TerminalColorCapability cap = TerminalColorCapability.builder().build();
 
             // Pre-calculate our specific theme colors
