@@ -115,20 +115,24 @@ Using Quarkus Picocli, Aesh and JBoss LogManager to colorize and format the mess
 
 1. Default Quarkus Logger disabled
 ```bash
-java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -jar ./target/quarkus-picocli-1.0.0-SNAPSHOT-runner.jar 
+java -Dquarkus.log.console.enabled=false -Djava.util.logging.manager=org.jboss.logmanager.LogManager -jar ./target/quarkus-picocli-1.0.0-SNAPSHOT-runner.jar 
 ```
+![Light](./image/quarkus-dev-disabled-light.png)
 
-2. Combining the Handler with Quarkus Picocli
+2. Logging messages using Quarkus JBoss logger
+```bash
+java -Dquarkus.log.console.enabled=true -Djava.util.logging.manager=org.jboss.logmanager.LogManager -jar ./target/quarkus-picocli-1.0.0-SNAPSHOT-runner.jar 
+```
+![Light](./image/quarkus-dev-light.png)
+
+3. Combining the JBoss LogManager Handler with Picocli PrintWriter (out/err)
 ```bash
 java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -jar ./target/quarkus-picocli-1.0.0-SNAPSHOT-runner.jar -c
 ```
+![Light](./image/quarkus-picocli-light.png)
 
-3. Changing the format of the messages to be logged
+4. Changing the format of the messages to be logged
 ```bash
 java -Dcli.log.msg.format="greeting-app: %s%e%n" -Djava.util.logging.manager=org.jboss.logmanager.LogManager -jar ./target/quarkus-picocli-1.0.0-SNAPSHOT-runner.jar -c 
 ```
-
-
-![Light](./image/quarkus-picocli-light.png)
-
-![Dark](./image/quarkus-picocli-dark.png)
+![Light](./image/quarkus-picocli-customize-light.png)
