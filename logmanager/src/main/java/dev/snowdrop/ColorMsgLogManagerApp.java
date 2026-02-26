@@ -29,11 +29,17 @@ public class ColorMsgLogManagerApp {
 
     private static void setupLogManagerAndHandler(int darken) throws IOException {
         String logName = ColorMsgLogManagerApp.class.getName();
-        //listHandlers(logName);
+
+        // Remove from the Root Logger the handlers to avoid to get the messages twice as by default a console handler is created
+        // https://issues.redhat.com/browse/LOGMGR-369
+        // Clean up handlers on the root logger
+        final var rootLogger = logManager.getLogger("");
+        for (var handler : rootLogger.getHandlers()) {
+            rootLogger.removeHandler(handler);
+        }
 
         ColorHandler handler = new ColorHandler(darken);
         handler.setLevel(Level.TRACE);
-        logManager.getLogger(logName).setUseParentHandlers(false); // This is needed to avoid to log twice the messages
         logManager.getLogger(logName).addHandler(handler);
         logManager.getLogger(logName).setLevel(Level.ALL);
     }
