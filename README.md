@@ -1,7 +1,30 @@
-# How to colorize messages logged
+# Terminal-Aware Colorized Logging Demo
 
-The goal of this project is to demo how we can display colorized messages in a terminal where the theme has been detected: dark or light using as
-terminal theme detector - Aesh and JBoss LogManager using a color formater.
+## Introduction
+
+This project demonstrates intelligent terminal logging with automatic theme detection and adaptive colorization. It showcases how to create visually appealing, readable log messages that automatically adjust their color schemes based on whether your terminal is using a dark or light theme.
+
+### Key Features
+
+- **Automatic Theme Detection**: Detects terminal theme (dark/light) using [Aesh](https://github.com/aeshell/aesh) terminal library
+- **Adaptive Colorization**: Dynamically adjusts log message colors for optimal readability
+- **Multiple Implementation Approaches**: Demonstrates various logging strategies using:
+  - [JBoss LogManager](https://github.com/jboss-logging/jboss-logmanager) with custom color formatters
+  - [Picocli](https://picocli.info/) for CLI applications
+  - [Quarkus](https://quarkus.io/) integration for modern Java applications
+  - [JBang](https://www.jbang.dev/) for quick scripting scenarios
+
+### Why This Matters
+
+Reading logs in a terminal can be challenging, especially when color schemes clash with your terminal theme. This project solves that problem by automatically detecting your terminal's theme and applying appropriate colors, ensuring logs are always readable and visually distinct regardless of your environment preferences.
+
+### Technologies Used
+
+- **Aesh**: Terminal theme detection and ANSI color support
+- **JBoss LogManager**: Flexible logging framework with custom handler support
+- **Picocli**: Command-line interface framework
+- **Quarkus**: Modern Java framework for cloud-native applications
+- **JBang**: Java scripting tool for rapid prototyping
 
 ## Aesh
 
