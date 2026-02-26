@@ -44,16 +44,6 @@ public class ColorMsgAeshApp {
         String timeStamp = OffsetDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        int levelColorCode = switch (level) {
-            case "TRACE" -> cap.getSuggestedTraceCode();
-            case "DEBUG" -> cap.getSuggestedDebugCode();
-            case "INFO"-> cap.getSuggestedInfoCode();
-            case "WARN"-> cap.getSuggestedWarningCode();
-            case "ERROR" -> cap.getSuggestedErrorCode();
-            case "FATAL" -> cap.getSuggestedFatalCode();
-            default -> cap.getSuggestedMessageCode();
-        };
-
         builder = ANSIBuilder.builder(cap)
                 .timestamp(timeStamp)
                 .append(SPACE);

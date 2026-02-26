@@ -28,17 +28,16 @@ Reading logs in a terminal can be challenging, especially when color schemes cla
 
 ## Aesh
 
-Using Aesh and LogManager to colorize the messages to be logged
+Using Aesh as tool to colorize the messages to be logged
 
 ```bash
 set AESH_GAV "$HOME/.m2/repository/dev/snowdrop/aesh/1.0.0-SNAPSHOT/aesh-1.0.0-SNAPSHOT-jar-with-dependencies.jar"
-alias colorWithAesh='java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -cp $AESH_GAV dev.snowdrop.ColorMsgAeshApp'
+alias colorWithAesh='java -cp $AESH_GAV dev.snowdrop.ColorMsgAeshApp'
 colorWithAesh
 
 or 
 
-java -Djava.util.logging.manager=org.jboss.logmanager.LogManager \
-        -cp "$HOME/.m2/repository/dev/snowdrop/aesh/1.0.0-SNAPSHOT/aesh-1.0.0-SNAPSHOT-jar-with-dependencies.jar" \
+java -cp "$HOME/.m2/repository/dev/snowdrop/aesh/1.0.0-SNAPSHOT/aesh-1.0.0-SNAPSHOT-jar-with-dependencies.jar" \
         dev.snowdrop.ColorMsgAeshApp
 ```
 1. Light Theme

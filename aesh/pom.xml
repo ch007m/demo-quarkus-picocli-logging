@@ -19,10 +19,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jboss.logmanager</groupId>
-            <artifactId>jboss-logmanager</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.aesh</groupId>
             <artifactId>terminal-tty</artifactId>
         </dependency>
