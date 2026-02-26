@@ -40,11 +40,11 @@ or
 java -cp "$HOME/.m2/repository/dev/snowdrop/aesh/1.0.0-SNAPSHOT/aesh-1.0.0-SNAPSHOT-jar-with-dependencies.jar" \
         dev.snowdrop.ColorMsgAeshApp
 ```
-1. Light Theme
+**1. Light Theme**
 
 ![Light](./image/aesh-light.png)
 
-2. Dark theme
+**2. Dark theme**
 
 ![Dark](./image/aesh-dark.png)
 
@@ -63,11 +63,11 @@ java -Djava.util.logging.manager=org.jboss.logmanager.LogManager \
   dev.snowdrop.ColorMsgLogManagerApp
 ```
 
-1. Light Theme
+**1. Light Theme**
 
 ![Light](./image/logmanager-light.png)
 
-2. Dark theme
+**2. Dark theme**
 
 ![Dark](./image/logmanager-dark.png)
 
@@ -78,11 +78,11 @@ Using the JBoss LogManager and a ColorHandler for colorize and format the messag
 jbang ./jbang/src/main/java/dev/snowdrop/ColorMsgLogManagerJBangApp.java
 ```
 
-1. Light Theme
+**1. Light Theme**
 
 ![Light](./image/jbang-light.png)
 
-2. Dark theme
+**2. Dark theme**
 
 ![Dark](./image/jbang-dark.png)
 
@@ -95,12 +95,12 @@ set PICOCLI_GAV "$HOME/.m2/repository/dev/snowdrop/picocli/1.0.0-SNAPSHOT/picocl
 alias colorWithPicocli='java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -cp $PICOCLI_GAV dev.snowdrop.ColorMsgPicocliApp'
 ```
 
-1. Using JBoss Loggger
+**1. Using JBoss Loggger**
 ```bash
 colorWithPicocli --name snowdrop
 ```
 
-2. Using a PicocliColorHandler
+**2. Use picocli printwriter out/err**
 ```bash
 colorWithPicocli --name snowdrop -c
 ```
@@ -113,25 +113,25 @@ colorWithPicocli --name snowdrop -c
 
 Using Quarkus Picocli, Aesh and JBoss LogManager to colorize and format the messages
 
-1. Default Quarkus Logger disabled
+**1. Default Quarkus Logger disabled**
 ```bash
 java -Dquarkus.log.console.enabled=false -Djava.util.logging.manager=org.jboss.logmanager.LogManager -jar ./target/quarkus-picocli-1.0.0-SNAPSHOT-runner.jar 
 ```
 ![Light](./image/quarkus-dev-disabled-light.png)
 
-2. Logging messages using Quarkus JBoss logger
+**2. Logging messages using Quarkus JBoss logger**
 ```bash
 java -Dquarkus.log.console.enabled=true -Djava.util.logging.manager=org.jboss.logmanager.LogManager -jar ./target/quarkus-picocli-1.0.0-SNAPSHOT-runner.jar 
 ```
 ![Light](./image/quarkus-dev-light.png)
 
-3. Combining the JBoss LogManager Handler with Picocli PrintWriter (out/err)
+**3. Combining the JBoss LogManager Handler with Picocli PrintWriter (out/err)**
 ```bash
 java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -jar ./target/quarkus-picocli-1.0.0-SNAPSHOT-runner.jar -c
 ```
 ![Light](./image/quarkus-picocli-light.png)
 
-4. Changing the format of the messages to be logged
+**4. Changing the format of the messages to be logged**
 ```bash
 java -Dcli.log.msg.format="greeting-app: %s%e%n" -Djava.util.logging.manager=org.jboss.logmanager.LogManager -jar ./target/quarkus-picocli-1.0.0-SNAPSHOT-runner.jar -c 
 ```
