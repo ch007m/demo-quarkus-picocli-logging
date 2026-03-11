@@ -30,6 +30,7 @@
     </properties>
 
     <modules>
+        <module>demo-service</module>
         <module>utils</module>
         <module>aesh</module>
         <module>logmanager</module>

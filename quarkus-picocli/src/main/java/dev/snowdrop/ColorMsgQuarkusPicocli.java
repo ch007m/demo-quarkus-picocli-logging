@@ -18,6 +18,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Spec;
+
+import jakarta.inject.Inject;
 import jakarta.enterprise.context.Dependent;
 
 import java.io.IOException;
@@ -54,12 +56,16 @@ public class ColorMsgQuarkusPicocli implements Runnable {
         if (color) {
             var darken = isTerminalDark();
             setupLogManagerAndHandler(darken);
-            logger.infof("Theme of the terminal is: %s", darken == 0 ? "Dark" :"Light");
+            logger.infof("Theme of the terminal is: %s", darken == 0 ? "Dark" : "Light");
         } else {
             org.jboss.logmanager.Logger rootLogger = logManager.getLogger(ColorMsgQuarkusPicocli.class.getName());
             rootLogger.setLevel(Level.ALL);
             rootLogger.setUseParentHandlers(true);
         }
+
+        // Calling the service packaged in an external module
+        HelloService helloService = new HelloService();
+        helloService.sendMessage(name);
 
         logger.trace("Hello " + name + "! This is a TRACE message.");
         logger.debug("Hello " + name + "! This is a DEBUG message.");
@@ -73,6 +79,11 @@ public class ColorMsgQuarkusPicocli implements Runnable {
     }
 
     private void setupLogManagerAndHandler(int darken) {
+        var rootLogger = logManager.getLogger("");
+        for (var handler : rootLogger.getHandlers()) {
+            rootLogger.removeHandler(handler);
+        }
+
         ColorHandler handler = new ColorHandler(spec, darken);
         handler.setLevel(Level.TRACE);
         handler.setFormatter(new ColorPatternFormatter(darken, logMsgFormat));
