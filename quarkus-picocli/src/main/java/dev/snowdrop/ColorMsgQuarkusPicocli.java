@@ -83,13 +83,13 @@ public class ColorMsgQuarkusPicocli implements Runnable {
         for (var handler : rootLogger.getHandlers()) {
             rootLogger.removeHandler(handler);
         }
-
         ColorHandler handler = new ColorHandler(spec, darken);
         handler.setLevel(Level.TRACE);
         handler.setFormatter(new ColorPatternFormatter(darken, logMsgFormat));
 
-        logManager.getLogger(ColorMsgQuarkusPicocli.class.getName()).addHandler(handler);
-        logManager.getLogger(ColorMsgQuarkusPicocli.class.getName()).setLevel(Level.ALL);
+        // Add to root logger so all loggers (including HelloService) inherit it
+        logManager.getLogger(ColorMsgQuarkusPicocli.class.getPackageName()).addHandler(handler);
+        logManager.getLogger(ColorMsgQuarkusPicocli.class.getPackageName()).setLevel(Level.ALL);
     }
 
     private static int isTerminalDark() {
