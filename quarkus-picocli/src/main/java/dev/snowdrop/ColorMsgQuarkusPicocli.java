@@ -70,8 +70,6 @@ public class ColorMsgQuarkusPicocli implements Runnable {
         HelloService helloService = new HelloService();
         helloService.sendMessage(name);
 
-        logger.infof("Verbosity selected: ",verbosity.length);
-
         // Messages logged with the following levels
         logger.fatalf("Hello %s, this is a FATAL message.");
         logger.errorf("Hello %s, this is an ERROR message.");
