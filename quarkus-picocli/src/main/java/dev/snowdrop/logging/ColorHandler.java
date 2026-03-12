@@ -1,9 +1,7 @@
-package dev.snowdrop;
+package dev.snowdrop.logging;
 
 import org.jboss.logmanager.ExtHandler;
 import org.jboss.logmanager.ExtLogRecord;
-import org.jboss.logmanager.LogManager;
-import org.jboss.logmanager.formatters.ColorPatternFormatter;
 import picocli.CommandLine;
 
 import java.io.PrintWriter;
@@ -12,14 +10,12 @@ import java.io.PrintWriter;
  * JBoss log handler that routes colored log output to Picocli stdout/stderr.
  */
 public class ColorHandler extends ExtHandler {
-
     private final CommandLine.Model.CommandSpec spec;
 
     /**
      * Creates a new handler with the given command spec and darken level.
      *
      * @param spec the Picocli command spec for output routing
-     * @param darken the darken level for the color formatter
      */
     public ColorHandler(CommandLine.Model.CommandSpec spec) {
         this.spec = spec;

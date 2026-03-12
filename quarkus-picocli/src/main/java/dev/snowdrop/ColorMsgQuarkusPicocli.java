@@ -6,20 +6,19 @@
 //RUNTIME_OPTIONS -Djava.util.logging.manager=org.jboss.logmanager.LogManager
 package dev.snowdrop;
 
-import org.aesh.terminal.tty.TerminalColorDetector;
-import org.aesh.terminal.tty.TerminalConnection;
+import dev.snowdrop.logging.LoggerUtils;
+import dev.snowdrop.logging.LoggingConfiguration;
+import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 import org.jboss.logmanager.Level;
 import org.jboss.logmanager.LogManager;
-import org.jboss.logmanager.formatters.ColorPatternFormatter;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Spec;
 
-import jakarta.inject.Inject;
 import jakarta.enterprise.context.Dependent;
 
 import java.io.IOException;
@@ -32,9 +31,6 @@ public class ColorMsgQuarkusPicocli implements Runnable {
     static LogManager logManager = (LogManager) LogManager.getLogManager();
     static Logger logger = Logger.getLogger(ColorMsgQuarkusPicocli.class.getName());
 
-    @ConfigProperty(name = "cli.log.msg.format")
-    String logMsgFormat;
-
     @Spec
     CommandSpec spec;
 
@@ -42,10 +38,17 @@ public class ColorMsgQuarkusPicocli implements Runnable {
             description = "Enable or disable colored output (default: ${DEFAULT-VALUE})")
     boolean color;
 
+    @CommandLine.Option(
+            names = {"-v"},
+            description = "Enable more tracing output: WARN, DEBUG, TRACE using -v, -vv or -vvv respectively")
+    boolean[] verbosity = new boolean[0];
+
     @CommandLine.Option(names = {"-n", "--name"}, description = "Who will we greet?", defaultValue = "World")
     String name;
 
     private final GreetingService greetingService;
+    @Inject
+    LoggingConfiguration loggingConfig;
 
     public ColorMsgQuarkusPicocli(GreetingService greetingService) {
         this.greetingService = greetingService;
@@ -54,9 +57,9 @@ public class ColorMsgQuarkusPicocli implements Runnable {
     @Override
     public void run() {
         if (color) {
-            var darken = isTerminalDark();
-            setupLogManagerAndHandler(darken);
-            logger.infof("Theme of the terminal is: %s", darken == 0 ? "Dark" : "Light");
+            LoggerUtils loggerUtils = new LoggerUtils();
+            loggerUtils.setupLogManagerAndHandler(loggingConfig, verbosity.length,spec);
+            logger.infof("Theme of the terminal is: %s", loggerUtils.isTerminalDark() == 0 ? "Dark" : "Light");
         } else {
             org.jboss.logmanager.Logger rootLogger = logManager.getLogger(ColorMsgQuarkusPicocli.class.getName());
             rootLogger.setLevel(Level.ALL);
@@ -67,45 +70,15 @@ public class ColorMsgQuarkusPicocli implements Runnable {
         HelloService helloService = new HelloService();
         helloService.sendMessage(name);
 
-        logger.trace("Hello " + name + "! This is a TRACE message.");
-        logger.debug("Hello " + name + "! This is a DEBUG message.");
         // Messages logged with the following levels
-        logger.info("Hello " + name + "! This is an INFO message.");
-        logger.warn("Hello " + name + "! This is a WARNING message.");
-        logger.error("Hello " + name + "! This is an ERROR message.");
-        logger.fatal("Hello " + name + "! This is a FATAL message.");
+        logger.fatalf("Hello %s, this is a FATAL message.");
+        logger.errorf("Hello %s, this is an ERROR message.");
+        logger.warnf("Hello %s, this is a WARN message.");
+        logger.infof("Hello %s, this is an INFO message.");
+        logger.debugf("Hello %s, this is a DEBUG message.");
+        logger.tracef("Hello %s, this is a TRACE message.");
 
         greetingService.sayHello(name);
-    }
-
-    private void setupLogManagerAndHandler(int darken) {
-        var rootLogger = logManager.getLogger("");
-        for (var handler : rootLogger.getHandlers()) {
-            rootLogger.removeHandler(handler);
-        }
-        ColorHandler handler = new ColorHandler(spec, darken);
-        handler.setLevel(Level.TRACE);
-        handler.setFormatter(new ColorPatternFormatter(darken, logMsgFormat));
-
-        // Add to root logger so all loggers (including HelloService) inherit it
-        logManager.getLogger(ColorMsgQuarkusPicocli.class.getPackageName()).addHandler(handler);
-        logManager.getLogger(ColorMsgQuarkusPicocli.class.getPackageName()).setLevel(Level.ALL);
-    }
-
-    private static int isTerminalDark() {
-        int darken = 0;
-        try {
-            long start = System.currentTimeMillis();
-            TerminalConnection connection = new TerminalConnection();
-            var cap = TerminalColorDetector.detect(connection);
-            long elapsed = System.currentTimeMillis() - start;
-            System.out.printf("Theme detection took: [%s ms]%n", elapsed);
-
-            darken = cap.getTheme().isDark() ? 0 : 1;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return darken;
     }
 }
 
